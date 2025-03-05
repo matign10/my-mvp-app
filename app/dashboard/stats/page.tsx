@@ -4,8 +4,25 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
+// Define una interfaz para las publicaciones
+interface Publication {
+  id: string;
+  title: string;
+  created_at: string;
+  views?: number;
+  // Añade otras propiedades según tu esquema de base de datos
+}
+
+// Define una interfaz para las estadísticas
+interface StatsData {
+  totalPublications: number;
+  totalViews: number;
+  recentViews: number;
+  topPublications: Publication[];
+}
+
 export default function StatsPage() {
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<StatsData>({
     totalPublications: 0,
     totalViews: 0,
     recentViews: 0,
@@ -40,7 +57,7 @@ export default function StatsPage() {
           totalPublications: publications?.length || 0,
           totalViews: 0,
           recentViews: 0,
-          topPublications: publications || []
+          topPublications: publications as Publication[] || []
         });
 
       } catch (err: any) {
