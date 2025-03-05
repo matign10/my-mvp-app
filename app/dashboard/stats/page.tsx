@@ -4,21 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
-// Define una interfaz para las publicaciones
-interface Publication {
-  id: string;
-  title: string;
-  created_at: string;
-  views?: number;
-  // Añade otras propiedades según tu esquema de base de datos
-}
-
-// Define una interfaz para las estadísticas
+// Esta es una solución simple que acepta cualquier tipo para las publicaciones
 interface StatsData {
   totalPublications: number;
   totalViews: number;
   recentViews: number;
-  topPublications: Publication[];
+  topPublications: any[]; // Usar 'any[]' en lugar de 'never[]'
 }
 
 export default function StatsPage() {
@@ -57,7 +48,7 @@ export default function StatsPage() {
           totalPublications: publications?.length || 0,
           totalViews: 0,
           recentViews: 0,
-          topPublications: publications as Publication[] || []
+          topPublications: publications || []
         });
 
       } catch (err: any) {
@@ -182,4 +173,4 @@ export default function StatsPage() {
       </div>
     </main>
   );
-} 
+}
