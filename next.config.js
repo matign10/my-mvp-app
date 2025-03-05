@@ -3,17 +3,19 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
     domains: ['ckpkelcgoaqeceumwoov.supabase.co'],
   },
   // Configuración para optimización de producción
   compress: true,
   poweredByHeader: false,
+  // Configuración para TypeScript
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  // Configuración para ESLint
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
   // Configuración para manejo de variables de entorno
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
