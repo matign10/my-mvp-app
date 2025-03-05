@@ -4,16 +4,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
-// Esta es una solución simple que acepta cualquier tipo para las publicaciones
-interface StatsData {
-  totalPublications: number;
-  totalViews: number;
-  recentViews: number;
-  topPublications: any[]; // Usar 'any[]' en lugar de 'never[]'
-}
-
 export default function StatsPage() {
-  const [stats, setStats] = useState<StatsData>({
+  // Definimos el tipo inicialmente como array de tipo any
+  const [stats, setStats] = useState<{
+    totalPublications: number;
+    totalViews: number;
+    recentViews: number;
+    topPublications: any[];  // Tipo explícito any[] para prevenir inferencia de never[]
+  }>({
     totalPublications: 0,
     totalViews: 0,
     recentViews: 0,
