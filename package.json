@@ -16,7 +16,7 @@
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",
     "@sendgrid/mail": "^8.1.4",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.39.3",
     "@types/nodemailer": "^6.4.17",
     "next": "14.1.0",
