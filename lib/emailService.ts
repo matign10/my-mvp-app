@@ -10,6 +10,11 @@ interface EmailData {
 export async function sendContactEmail(data: EmailData) {
   const { name, email, subject, message } = data;
   
+  console.log('Iniciando configuración de email...');
+  console.log('Host:', process.env.SMTP_HOST);
+  console.log('Puerto:', process.env.SMTP_PORT);
+  console.log('Usuario:', process.env.SMTP_USER);
+  
   // Crear el transportador de email
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -20,6 +25,16 @@ export async function sendContactEmail(data: EmailData) {
       pass: process.env.SMTP_PASS,
     },
   });
+
+  // Verificar la conexión
+  try {
+    console.log('Verificando conexión SMTP...');
+    await transporter.verify();
+    console.log('Conexión SMTP verificada correctamente');
+  } catch (error) {
+    console.error('Error al verificar conexión SMTP:', error);
+    return { success: false, error: 'Error de conexión SMTP' };
+  }
 
   const mailOptions = {
     from: process.env.EMAIL_FROM,
@@ -44,10 +59,27 @@ export async function sendContactEmail(data: EmailData) {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
-    return { success: true };
-  } catch (error) {
-    console.error('Error al enviar email:', error);
-    return { success: false, error };
+    console.log('Intentando enviar email...');
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email enviado correctamente:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error: any) {
+    console.error('Error detallado al enviar email:', {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      response: error.response,
+      responseCode: error.responseCode
+    });
+    return { 
+      success: false, 
+      error: error.message,
+      details: {
+        code: error.code,
+        command: error.command,
+        response: error.response,
+        responseCode: error.responseCode
+      }
+    };
   }
 } 
