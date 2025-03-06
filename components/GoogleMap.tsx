@@ -31,11 +31,15 @@ export default function GoogleMap() {
     const initializeMap = () => {
       if (!mapRef.current) return;
 
-      const position = { lat: -34.603722, lng: -58.381592 };
-      
-      mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
+      const position = {
+        lat: -34.595722,
+        lng: -58.384592
+      };
+
+      const mapOptions = {
+        zoom: 15,
         center: position,
-        zoom: 17,
+        mapTypeId: window.google.maps.MapTypeId.ROADMAP,
         styles: [
           {
             featureType: "all",
@@ -118,7 +122,9 @@ export default function GoogleMap() {
             stylers: [{ color: "#17263c" }]
           }
         ]
-      });
+      };
+
+      mapInstanceRef.current = new window.google.maps.Map(mapRef.current, mapOptions);
 
       markerRef.current = new window.google.maps.Marker({
         position: position,
@@ -131,7 +137,7 @@ export default function GoogleMap() {
         content: `
           <div class="p-2">
             <h3 class="font-bold">ECEN Estudio Jurídico</h3>
-            <p>Uruguay 763, C1013 Cdad. Autónoma de Buenos Aires, Argentina</p>
+            <p>Uruguay 763, C1015 Cdad. Autónoma de Buenos Aires, Argentina</p>
           </div>
         `
       });

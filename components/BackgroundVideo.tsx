@@ -22,7 +22,15 @@ export default function BackgroundVideo() {
         loop
         muted
         playsInline
-        className="absolute w-full h-full object-cover"
+        className="absolute w-full h-full object-cover md:object-cover"
+        style={{
+          objectPosition: 'center center',
+          minHeight: '100%',
+          minWidth: '100%',
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+        }}
       >
         <source src="/videos/law-office.mp4" type="video/mp4" />
       </video>
