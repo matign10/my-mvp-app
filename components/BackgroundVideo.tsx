@@ -32,14 +32,14 @@ export default function BackgroundVideo() {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0">
         <div className="relative w-full h-full">
           <video
             ref={videoRef}
             className={`
               absolute w-full h-full object-cover
-              ${isMobile ? 'scale-150' : 'scale-100'}
-              transition-transform duration-300 ease-in-out
+              ${isMobile ? 'object-contain md:object-cover' : 'object-cover'}
+              transition-all duration-300 ease-in-out
             `}
             autoPlay
             loop
@@ -47,11 +47,10 @@ export default function BackgroundVideo() {
             playsInline
             style={{
               objectPosition: 'center',
-              aspectRatio: '16/9',
-              minHeight: '100%',
-              minWidth: '100%',
-              width: 'auto',
-              height: 'auto'
+              height: isMobile ? '100vh' : '100%',
+              width: isMobile ? 'auto' : '100%',
+              maxWidth: isMobile ? 'none' : '100%',
+              maxHeight: isMobile ? 'none' : '100%'
             }}
           >
             <source src="/videos/law-office.mp4" type="video/mp4" />
