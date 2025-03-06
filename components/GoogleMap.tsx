@@ -18,7 +18,7 @@ export default function GoogleMap() {
     const loadGoogleMaps = () => {
       if (typeof window.google === 'undefined') {
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
         script.async = true;
         script.defer = true;
         script.onload = initializeMap;
@@ -31,15 +31,10 @@ export default function GoogleMap() {
     const initializeMap = () => {
       if (!mapRef.current) return;
 
-      // Coordenadas exactas de Uruguay 763, CABA
-      const position = {
-        lat: -34.595722,
-        lng: -58.384592
-      };
-
+      // Primero creamos el mapa centrado en Buenos Aires
       const mapOptions = {
-        zoom: 17, // Aumentamos el zoom para ver mejor la ubicación
-        center: position,
+        zoom: 13,
+        center: { lat: -34.603722, lng: -58.381592 }, // Centro de Buenos Aires
         mapTypeId: window.google.maps.MapTypeId.ROADMAP,
         styles: [
           {
@@ -127,25 +122,42 @@ export default function GoogleMap() {
 
       mapInstanceRef.current = new window.google.maps.Map(mapRef.current, mapOptions);
 
-      markerRef.current = new window.google.maps.Marker({
-        position: position,
-        map: mapInstanceRef.current,
-        title: "ECEN Estudio Jurídico",
-        animation: window.google.maps.Animation.DROP
-      });
+      // Usar el geocodificador para obtener las coordenadas exactas
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ address: 'Uruguay 763, Ciudad Autónoma de Buenos Aires, Argentina' }, (results, status) => {
+        if (status === 'OK' && results?.[0]) {
+          const position = results[0].geometry.location;
+          
+          // Actualizar el centro del mapa
+          mapInstanceRef.current?.setCenter(position);
+          mapInstanceRef.current?.setZoom(17);
 
-      infoWindowRef.current = new window.google.maps.InfoWindow({
-        content: `
-          <div class="p-2">
-            <h3 class="font-bold">ECEN Estudio Jurídico</h3>
-            <p>Uruguay 763, C1015 Cdad. Autónoma de Buenos Aires, Argentina</p>
-          </div>
-        `
-      });
+          // Crear el marcador
+          markerRef.current = new window.google.maps.Marker({
+            position: position,
+            map: mapInstanceRef.current,
+            title: "ECEN Estudio Jurídico",
+            animation: window.google.maps.Animation.DROP
+          });
 
-      markerRef.current.addListener("click", () => {
-        if (infoWindowRef.current && markerRef.current) {
-          infoWindowRef.current.open(mapInstanceRef.current, markerRef.current);
+          // Crear la ventana de información
+          infoWindowRef.current = new window.google.maps.InfoWindow({
+            content: `
+              <div class="p-2">
+                <h3 class="font-bold">ECEN Estudio Jurídico</h3>
+                <p>Uruguay 763, C1015 Cdad. Autónoma de Buenos Aires, Argentina</p>
+              </div>
+            `
+          });
+
+          // Agregar el evento de clic al marcador
+          markerRef.current.addListener("click", () => {
+            if (infoWindowRef.current && markerRef.current) {
+              infoWindowRef.current.open(mapInstanceRef.current, markerRef.current);
+            }
+          });
+        } else {
+          console.error('Error en la geocodificación:', status);
         }
       });
     };
