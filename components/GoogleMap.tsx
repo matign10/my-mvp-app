@@ -31,10 +31,15 @@ export default function GoogleMap() {
     const initializeMap = () => {
       if (!mapRef.current) return;
 
-      // Primero creamos el mapa centrado en Buenos Aires
+      // Coordenadas exactas de Uruguay 763, CABA
+      const exactPosition = {
+        lat: -34.595722,
+        lng: -58.384592
+      };
+
       const mapOptions = {
-        zoom: 13,
-        center: { lat: -34.603722, lng: -58.381592 }, // Centro de Buenos Aires
+        zoom: 18,
+        center: exactPosition,
         mapTypeId: window.google.maps.MapTypeId.ROADMAP,
         styles: [
           {
@@ -122,42 +127,33 @@ export default function GoogleMap() {
 
       mapInstanceRef.current = new window.google.maps.Map(mapRef.current, mapOptions);
 
-      // Usar el geocodificador para obtener las coordenadas exactas
-      const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode({ address: 'Uruguay 763, Ciudad Autónoma de Buenos Aires, Argentina' }, (results, status) => {
-        if (status === 'OK' && results?.[0]) {
-          const position = results[0].geometry.location;
-          
-          // Actualizar el centro del mapa
-          mapInstanceRef.current?.setCenter(position);
-          mapInstanceRef.current?.setZoom(17);
+      // Crear el marcador personalizado
+      markerRef.current = new window.google.maps.Marker({
+        position: exactPosition,
+        map: mapInstanceRef.current,
+        title: "ECEN Estudio Jurídico",
+        animation: window.google.maps.Animation.DROP,
+        icon: {
+          url: '/images/marker.png',
+          scaledSize: new window.google.maps.Size(40, 40),
+          anchor: new window.google.maps.Point(20, 40)
+        }
+      });
 
-          // Crear el marcador
-          markerRef.current = new window.google.maps.Marker({
-            position: position,
-            map: mapInstanceRef.current,
-            title: "ECEN Estudio Jurídico",
-            animation: window.google.maps.Animation.DROP
-          });
+      // Crear la ventana de información
+      infoWindowRef.current = new window.google.maps.InfoWindow({
+        content: `
+          <div class="p-2">
+            <h3 class="font-bold">ECEN Estudio Jurídico</h3>
+            <p>Uruguay 763, C1015 Cdad. Autónoma de Buenos Aires, Argentina</p>
+          </div>
+        `
+      });
 
-          // Crear la ventana de información
-          infoWindowRef.current = new window.google.maps.InfoWindow({
-            content: `
-              <div class="p-2">
-                <h3 class="font-bold">ECEN Estudio Jurídico</h3>
-                <p>Uruguay 763, C1015 Cdad. Autónoma de Buenos Aires, Argentina</p>
-              </div>
-            `
-          });
-
-          // Agregar el evento de clic al marcador
-          markerRef.current.addListener("click", () => {
-            if (infoWindowRef.current && markerRef.current) {
-              infoWindowRef.current.open(mapInstanceRef.current, markerRef.current);
-            }
-          });
-        } else {
-          console.error('Error en la geocodificación:', status);
+      // Agregar el evento de clic al marcador
+      markerRef.current.addListener("click", () => {
+        if (infoWindowRef.current && markerRef.current) {
+          infoWindowRef.current.open(mapInstanceRef.current, markerRef.current);
         }
       });
     };
@@ -175,9 +171,20 @@ export default function GoogleMap() {
   }, []);
 
   return (
-    <div 
-      ref={mapRef} 
-      className="w-full h-[400px] rounded-lg shadow-lg"
-    />
+    <div className="relative w-full h-[400px] rounded-lg shadow-lg overflow-hidden">
+      <div 
+        ref={mapRef} 
+        className="w-full h-full"
+      />
+      {/* Iframe de respaldo */}
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.016887889456!2d-58.3863807!3d-34.595722!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcca9b4ef9aae3%3A0x7b0ef4c58b663aa9!2sUruguay%20763%2C%20C1015%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1709912345678!5m2!1ses-419!2sar"
+        className="absolute inset-0 w-full h-full"
+        style={{ border: 0 }}
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
+    </div>
   );
 }
