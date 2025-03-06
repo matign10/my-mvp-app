@@ -31,13 +31,14 @@ export default function GoogleMap() {
     const initializeMap = () => {
       if (!mapRef.current) return;
 
+      // Coordenadas exactas de Uruguay 763, CABA
       const position = {
         lat: -34.595722,
         lng: -58.384592
       };
 
       const mapOptions = {
-        zoom: 15,
+        zoom: 17, // Aumentamos el zoom para ver mejor la ubicación
         center: position,
         mapTypeId: window.google.maps.MapTypeId.ROADMAP,
         styles: [
