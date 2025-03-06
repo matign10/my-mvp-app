@@ -32,38 +32,32 @@ export default function BackgroundVideo() {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      {isMobile ? (
-        // Versión móvil: imagen estática
-        <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: 'url("/images/law-office-mobile.jpg")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            transform: 'scale(1.2)',
-            transformOrigin: 'center'
-          }}
-        />
-      ) : (
-        // Versión desktop: video
-        <video
-          ref={videoRef}
-          className="absolute w-full h-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-          style={{
-            objectPosition: 'center',
-            minHeight: '100%',
-            minWidth: '100%',
-            width: 'auto',
-            height: 'auto'
-          }}
-        >
-          <source src="/videos/law-office.mp4" type="video/mp4" />
-        </video>
-      )}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative w-full h-full">
+          <video
+            ref={videoRef}
+            className={`
+              absolute w-full h-full object-cover
+              ${isMobile ? 'scale-150' : 'scale-100'}
+              transition-transform duration-300 ease-in-out
+            `}
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              objectPosition: 'center',
+              aspectRatio: '16/9',
+              minHeight: '100%',
+              minWidth: '100%',
+              width: 'auto',
+              height: 'auto'
+            }}
+          >
+            <source src="/videos/law-office.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
     </div>
   );
