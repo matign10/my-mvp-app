@@ -34,6 +34,9 @@ export default function BackgroundVideo() {
     <div className="relative w-full h-screen overflow-hidden">
       <div className="absolute inset-0">
         <div className="relative w-full h-full">
+          <div className="absolute top-20 left-0 right-0 z-10 p-4 text-center text-white bg-black bg-opacity-40">
+            <p className="text-lg md:text-xl font-semibold">Estudio Jurídico Comprometido con Su Éxito</p>
+          </div>
           <video
             ref={videoRef}
             className={`
