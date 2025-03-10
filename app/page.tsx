@@ -11,7 +11,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative sticky top-0 h-screen bg-transparent z-0">
         <BackgroundVideo />
-        <div className="relative h-full flex flex-col justify-center items-center z-10 pt-16 pb-10 max-w-screen-xl mx-auto px-4">
+        <div className="relative h-full flex flex-col justify-center z-10 pt-16 pb-10 max-w-screen-xl mx-auto px-4">
           <div className="max-w-2xl text-white">
             <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight drop-shadow-2xl">
               Excelencia Legal al Servicio de Nuestros Clientes
@@ -30,9 +30,9 @@ export default function Home() {
       </section>
 
       {/* Áreas de Práctica */}
-      <section className="relative z-10 py-16 md:py-20 bg-white" id="areas">
+      <section className="relative z-10 py-16 md:py-20 bg-white dark:bg-gray-800" id="areas">
         <div className="max-w-screen-xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#2d3436] mb-12 text-center tracking-tight">
+          <h2 className="text-3xl font-bold text-[#2d3436] dark:text-white mb-12 text-center tracking-tight">
             Áreas de Práctica
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -98,9 +98,9 @@ export default function Home() {
       </section>
 
       {/* Profesionales Destacados */}
-      <section className="relative z-10 py-16 md:py-20 bg-[#f8f9fa]" id="profesionales">
+      <section className="relative z-10 py-16 md:py-20 bg-[#f8f9fa] dark:bg-gray-900" id="profesionales">
         <div className="max-w-screen-xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#2d3436] mb-12 text-center tracking-tight">
+          <h2 className="text-3xl font-bold text-[#2d3436] dark:text-white mb-12 text-center tracking-tight">
             Nuestros Profesionales
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -160,9 +160,9 @@ export default function Home() {
       </section>
 
       {/* Sobre Nosotros */}
-      <section className="relative z-10 py-16 md:py-20 bg-white" id="sobre-nosotros">
+      <section className="relative z-10 py-16 md:py-20 bg-white dark:bg-gray-800" id="sobre-nosotros">
         <div className="max-w-screen-xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#2d3436] mb-12 text-center tracking-tight">
+          <h2 className="text-3xl font-bold text-[#2d3436] dark:text-white mb-12 text-center tracking-tight">
             Sobre Nosotros
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -195,9 +195,9 @@ export default function Home() {
       </section>
 
       {/* Contacto */}
-      <section className="relative z-10 py-16 md:py-20 bg-white" id="contacto">
+      <section className="relative z-10 py-16 md:py-20 bg-white dark:bg-gray-800" id="contacto">
         <div className="max-w-screen-xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#2d3436] mb-12 text-center tracking-tight">
+          <h2 className="text-3xl font-bold text-[#2d3436] dark:text-white mb-12 text-center tracking-tight">
             Contacto
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">

@@ -57,7 +57,7 @@ export default function BackgroundVideo() {
           >
             <source src="/videos/law-office.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/20 dark:from-black/70 dark:via-black/50 dark:to-black/40"></div>
         </div>
       )}
 
@@ -75,7 +75,7 @@ export default function BackgroundVideo() {
           >
             <source src="/videos/law-office-mobile.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/20 dark:from-black/70 dark:via-black/50 dark:to-black/40"></div>
         </div>
       )}
     </>
