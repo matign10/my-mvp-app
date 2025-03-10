@@ -16,7 +16,7 @@ export default function BackgroundVideo() {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="absolute inset-0 w-full h-full overflow-hidden">
       <div className="absolute inset-0">
         <video
           ref={videoRef}
@@ -29,7 +29,7 @@ export default function BackgroundVideo() {
           <source src="/videos/law-office.mp4" type="video/mp4" />
         </video>
       </div>
-      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-30"></div>
     </div>
   );
 }
