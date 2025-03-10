@@ -28,12 +28,12 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white fixed w-full z-20 top-0 start-0 border-b border-[#b2bec3]">
+    <nav className="bg-white fixed w-full z-20 top-0 start-0 border-b border-[#b2bec3] shadow-sm">
       {/* Barra principal */}
       <div className="max-w-screen-xl mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center">
-            <span className="text-2xl font-bold text-[#2d3436] tracking-tight">
+            <span className="text-2xl font-bold text-[#2d3436] tracking-tight drop-shadow-sm">
               ECEN
             </span>
           </Link>
