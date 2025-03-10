@@ -11,17 +11,17 @@ export default function BackgroundVideo() {
       setIsMobile(window.innerWidth < 768);
     };
 
-    // Verificar al montar el componente
+    // Check on component mount
     checkMobile();
 
-    // Escuchar cambios en el tamaño de la ventana
+    // Listen for window resize
     window.addEventListener('resize', checkMobile);
 
-    // Reproducir el video
+    // Play video
     const video = videoRef.current;
     if (video) {
       video.play().catch(error => {
-        console.log("Error al reproducir el video:", error);
+        console.log("Error playing video:", error);
       });
     }
 
@@ -31,24 +31,43 @@ export default function BackgroundVideo() {
   }, []);
 
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden">
-      <div className="absolute inset-0 top-[-80px]">
-        <video
-          ref={videoRef}
-          className="absolute w-full h-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          {isMobile ? (
-            <source src="/videos/law-office-mobile.mp4" type="video/mp4" />
-          ) : (
+    <>
+      {/* Overlay para oscurecer ligeramente el video */}
+      <div className="absolute inset-0 bg-black bg-opacity-30 z-[1]"></div>
+      
+      {/* Video de escritorio */}
+      {!isMobile && (
+        <div className="absolute inset-0 top-[-120px] h-[120vh] w-full overflow-hidden">
+          <video
+            ref={videoRef}
+            className="absolute w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{ objectPosition: 'center center' }}
+          >
             <source src="/videos/law-office.mp4" type="video/mp4" />
-          )}
-        </video>
-      </div>
-      <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-    </div>
+          </video>
+        </div>
+      )}
+      
+      {/* Video móvil */}
+      {isMobile && (
+        <div className="absolute inset-0 h-full w-full overflow-hidden">
+          <video
+            ref={videoRef}
+            className="absolute w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{ objectPosition: 'center center' }}
+          >
+            <source src="/videos/law-office-mobile.mp4" type="video/mp4" />
+          </video>
+        </div>
+      )}
+    </>
   );
 }
