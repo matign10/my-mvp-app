@@ -46,7 +46,7 @@ export default function BackgroundVideo() {
     <>
       {/* Capa de video para escritorio */}
       {!isMobile && (
-        <div className="fixed left-0 top-0 w-full h-screen z-0">
+        <div className="absolute inset-0 w-full h-full">
           <video
             ref={desktopVideoRef}
             className="absolute top-0 left-0 w-full h-[120vh] object-cover"
@@ -63,10 +63,11 @@ export default function BackgroundVideo() {
 
       {/* Capa de video para móvil */}
       {isMobile && (
-        <div className="fixed left-0 top-0 w-full h-screen z-0">
+        <div className="absolute inset-0 w-full h-full">
           <video
             ref={mobileVideoRef}
-            className="absolute top-0 left-0 w-full h-screen object-cover"
+            className="absolute top-0 left-0 w-full h-full object-contain md:object-cover"
+            style={{ objectPosition: 'center 20%' }}
             autoPlay
             loop
             muted

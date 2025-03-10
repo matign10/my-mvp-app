@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative h-screen bg-transparent">
+      <section className="relative sticky top-0 h-screen bg-transparent z-0">
         <BackgroundVideo />
         <div className="relative h-full flex items-center z-10 pt-20 max-w-screen-xl mx-auto px-4">
           <div className="max-w-2xl text-white">
@@ -30,7 +30,7 @@ export default function Home() {
       </section>
 
       {/* Áreas de Práctica */}
-      <section className="py-16 md:py-20 bg-white" id="areas">
+      <section className="relative z-10 py-16 md:py-20 bg-white" id="areas">
         <div className="max-w-screen-xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#2d3436] mb-12 text-center tracking-tight">
             Áreas de Práctica
@@ -98,7 +98,7 @@ export default function Home() {
       </section>
 
       {/* Profesionales Destacados */}
-      <section className="py-16 md:py-20 bg-[#f8f9fa]" id="profesionales">
+      <section className="relative z-10 py-16 md:py-20 bg-[#f8f9fa]" id="profesionales">
         <div className="max-w-screen-xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#2d3436] mb-12 text-center tracking-tight">
             Nuestros Profesionales
@@ -160,7 +160,7 @@ export default function Home() {
       </section>
 
       {/* Sobre Nosotros */}
-      <section className="py-16 md:py-20 bg-white" id="sobre-nosotros">
+      <section className="relative z-10 py-16 md:py-20 bg-white" id="sobre-nosotros">
         <div className="max-w-screen-xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#2d3436] mb-12 text-center tracking-tight">
             Sobre Nosotros
@@ -195,7 +195,7 @@ export default function Home() {
       </section>
 
       {/* Contacto */}
-      <section className="py-16 md:py-20 bg-white" id="contacto">
+      <section className="relative z-10 py-16 md:py-20 bg-white" id="contacto">
         <div className="max-w-screen-xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-[#2d3436] mb-12 text-center tracking-tight">
             Contacto
