@@ -9,14 +9,14 @@ export default function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative h-screen bg-[#2d3436] overflow-hidden">
+      <section className="relative h-screen bg-transparent">
         <BackgroundVideo />
-        <div className="relative max-w-screen-xl mx-auto px-4 h-full flex items-center z-[2] pt-20">
-          <div className="max-w-2xl text-white mt-[-40px] md:mt-0">
-            <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight drop-shadow-md">
+        <div className="relative h-full flex items-center z-10 pt-20 max-w-screen-xl mx-auto px-4">
+          <div className="max-w-2xl text-white">
+            <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight drop-shadow-lg">
               Excelencia Legal al Servicio de Nuestros Clientes
             </h1>
-            <p className="text-lg mb-8 drop-shadow-md">
+            <p className="text-lg mb-8 drop-shadow-lg">
               Brindamos asesoramiento legal integral con los más altos estándares de calidad y profesionalismo.
             </p>
             <Link
