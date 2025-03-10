@@ -9,10 +9,10 @@ export default function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative h-screen bg-[#2d3436] overflow-hidden pt-16">
+      <section className="relative h-screen bg-[#2d3436] overflow-hidden">
         <BackgroundVideo />
         <div className="relative max-w-screen-xl mx-auto px-4 h-full flex items-center">
-          <div className="max-w-2xl text-white pt-[80px] md:pt-[100px]">
+          <div className="max-w-2xl text-white">
             <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
               Excelencia Legal al Servicio de Nuestros Clientes
             </h1>
