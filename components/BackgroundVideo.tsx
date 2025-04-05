@@ -19,8 +19,8 @@ export default function BackgroundVideo() {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden">
-      <div className="relative w-full h-full animate-ken-burns">
+    <div className="fixed inset-0 w-full h-full -z-10">
+      <div className="relative w-full h-full">
         <Image
           src="/videos/law-office-mobile.jpg"
           alt="Law Office Background"
@@ -28,10 +28,10 @@ export default function BackgroundVideo() {
           priority
           className="object-cover"
           sizes="100vw"
-          quality={90}
+          quality={100}
         />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
-      <div className="absolute inset-0 bg-black/50" />
       <style jsx global>{`
         @keyframes kenBurns {
           0% {
