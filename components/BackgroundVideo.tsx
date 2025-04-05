@@ -9,22 +9,37 @@ export default function VideoBackground() {
 
   useEffect(() => {
     setIsMounted(true);
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+    
+    // Función para verificar si es un dispositivo móvil
+    const checkMobile = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth <= 768);
+      }
     };
 
-    // Inicializar el estado
-    handleResize();
+    // Verificar al montar
+    checkMobile();
 
     // Agregar listener para cambios de tamaño
-    window.addEventListener('resize', handleResize);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', checkMobile);
+    }
 
     // Limpiar listener
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', checkMobile);
+      }
+    };
   }, []);
 
+  // No renderizar nada hasta que el componente esté montado
   if (!isMounted) {
-    return null;
+    return (
+      <div className="fixed inset-0 w-full h-full -z-10 bg-[#2d3436]">
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
+    );
   }
 
   return (
