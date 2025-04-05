@@ -5,8 +5,10 @@ import BackgroundVideo from 'react-background-video-player';
 
 export default function VideoBackground() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -20,6 +22,10 @@ export default function VideoBackground() {
     // Limpiar listener
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 w-full h-full -z-10">
