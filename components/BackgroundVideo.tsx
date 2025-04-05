@@ -20,9 +20,8 @@ export default function BackgroundVideo() {
   return (
     <div className="fixed inset-0 w-full h-full -z-10">
       <video
-        className="absolute w-full h-full object-cover"
+        className="absolute min-w-full min-h-full object-cover"
         autoPlay
-        loop
         muted
         playsInline
       >
