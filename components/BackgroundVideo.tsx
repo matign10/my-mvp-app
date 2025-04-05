@@ -8,7 +8,9 @@ const VideoPlayer = dynamic(() => import('react-background-video-player'), { ssr
 export default function BackgroundVideo() {
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 1280, height: 720 });
 
+  // Efecto para manejar el montaje del componente
   useEffect(() => {
     setIsMounted(true);
     
@@ -35,13 +37,41 @@ export default function BackgroundVideo() {
     };
   }, []);
 
-  // No renderizar nada hasta que el componente esté montado
+  // Efecto separado para manejar las dimensiones
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const updateDimensions = () => {
+      if (typeof window !== 'undefined') {
+        setDimensions({
+          width: window.innerWidth,
+          height: window.innerHeight
+        });
+      }
+    };
+
+    // Actualizar dimensiones iniciales
+    updateDimensions();
+
+    // Agregar listener para cambios de tamaño
+    window.addEventListener('resize', updateDimensions);
+
+    // Limpiar listener
+    return () => {
+      window.removeEventListener('resize', updateDimensions);
+    };
+  }, [isMounted]);
+
+  // Diseño fallback para SSR y estado de carga
+  const fallbackContent = (
+    <div className="fixed inset-0 w-full h-full -z-10 bg-[#2d3436]">
+      <div className="absolute inset-0 bg-black/50" />
+    </div>
+  );
+
+  // No renderizar el video hasta que el componente esté montado
   if (!isMounted) {
-    return (
-      <div className="fixed inset-0 w-full h-full -z-10 bg-[#2d3436]">
-        <div className="absolute inset-0 bg-black/50" />
-      </div>
-    );
+    return fallbackContent;
   }
 
   return (
@@ -51,6 +81,8 @@ export default function BackgroundVideo() {
         autoPlay
         loop
         muted
+        containerWidth={dimensions.width}
+        containerHeight={dimensions.height}
         style={{
           width: '100%',
           height: '100%',

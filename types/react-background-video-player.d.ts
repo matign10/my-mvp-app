@@ -6,6 +6,8 @@ declare module 'react-background-video-player' {
     autoPlay?: boolean;
     loop?: boolean;
     muted?: boolean;
+    containerWidth?: number;
+    containerHeight?: number;
     style?: React.CSSProperties;
   }
 
