@@ -17,29 +17,29 @@
     "@googlemaps/js-api-loader": "^1.16.8",
     "@sendgrid/mail": "^8.1.4",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/supabase-js": "^2.39.3",
     "@types/nodemailer": "^6.4.17",
     "next": "14.1.0",
     "nodemailer": "^6.10.0",
     "react": "^18",
     "react-dom": "^18",
-    "react-quill": "^2.0.0",
-    "@supabase/supabase-js": "^2.39.3",
-    "react-email": "^2.0.0"
+    "react-email": "^2.0.0",
+    "react-quill": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.6",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
     "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^5",
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.11",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.2.0"
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
