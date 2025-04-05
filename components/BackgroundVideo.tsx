@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function BackgroundVideo() {
   const [isMounted, setIsMounted] = useState(false);
@@ -18,17 +19,36 @@ export default function BackgroundVideo() {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full -z-10">
-      <video
-        className="absolute min-w-full min-h-full object-cover"
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-      >
-        <source src="/videos/law-office-optimized.mp4" type="video/mp4" />
-      </video>
+    <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden">
+      <div className="relative w-full h-full animate-ken-burns">
+        <Image
+          src="/videos/law-office-mobile.jpg"
+          alt="Law Office Background"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+          quality={90}
+        />
+      </div>
       <div className="absolute inset-0 bg-black/50" />
+      <style jsx global>{`
+        @keyframes kenBurns {
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.1);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+        .animate-ken-burns {
+          animation: kenBurns 20s ease-in-out infinite;
+          will-change: transform;
+        }
+      `}</style>
     </div>
   );
 } 
