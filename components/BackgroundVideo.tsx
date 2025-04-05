@@ -1,98 +1,52 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-
-const VideoPlayer = dynamic(() => import('react-background-video-player'), { ssr: false });
 
 export default function BackgroundVideo() {
-  const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 1280, height: 720 });
 
-  // Efecto para manejar el montaje del componente
   useEffect(() => {
     setIsMounted(true);
-    
-    // Función para verificar si es un dispositivo móvil
-    const checkMobile = () => {
-      if (typeof window !== 'undefined') {
-        setIsMobile(window.innerWidth <= 768);
-      }
-    };
-
-    // Verificar al montar
-    checkMobile();
-
-    // Agregar listener para cambios de tamaño
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', checkMobile);
-    }
-
-    // Limpiar listener
-    return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('resize', checkMobile);
-      }
-    };
   }, []);
 
-  // Efecto separado para manejar las dimensiones
-  useEffect(() => {
-    if (!isMounted) return;
-
-    const updateDimensions = () => {
-      if (typeof window !== 'undefined') {
-        setDimensions({
-          width: window.innerWidth,
-          height: window.innerHeight
-        });
-      }
-    };
-
-    // Actualizar dimensiones iniciales
-    updateDimensions();
-
-    // Agregar listener para cambios de tamaño
-    window.addEventListener('resize', updateDimensions);
-
-    // Limpiar listener
-    return () => {
-      window.removeEventListener('resize', updateDimensions);
-    };
-  }, [isMounted]);
-
-  // Diseño fallback para SSR y estado de carga
-  const fallbackContent = (
-    <div className="fixed inset-0 w-full h-full -z-10 bg-[#2d3436]">
-      <div className="absolute inset-0 bg-black/50" />
-    </div>
-  );
-
-  // No renderizar el video hasta que el componente esté montado
   if (!isMounted) {
-    return fallbackContent;
+    return (
+      <div className="fixed inset-0 w-full h-full -z-10 bg-[#2d3436]">
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
+    );
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full -z-10">
-      <VideoPlayer
-        src={isMobile ? '/videos/law-office-mobile.mp4' : '/videos/law-office.mp4'}
+    <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden">
+      <video
+        className="absolute min-w-full min-h-full w-auto h-auto object-cover"
         autoPlay
         loop
         muted
-        containerWidth={dimensions.width}
-        containerHeight={dimensions.height}
+        playsInline
         style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
           position: 'absolute',
-          top: 0,
-          left: 0,
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
         }}
-      />
+      >
+        <source src="/videos/law-office.mp4" type="video/mp4" />
+      </video>
       <div className="absolute inset-0 bg-black/50" />
+      <style jsx>{`
+        @media (max-width: 768px) {
+          video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: none;
+            top: 0;
+            left: 0;
+          }
+        }
+      `}</style>
     </div>
   );
 } 
