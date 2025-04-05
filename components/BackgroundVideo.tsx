@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import BackgroundVideo from 'react-background-video-player';
+import dynamic from 'next/dynamic';
 
-export default function VideoBackground() {
+const VideoPlayer = dynamic(() => import('react-background-video-player'), { ssr: false });
+
+export default function BackgroundVideo() {
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -44,7 +46,7 @@ export default function VideoBackground() {
 
   return (
     <div className="fixed inset-0 w-full h-full -z-10">
-      <BackgroundVideo
+      <VideoPlayer
         src={isMobile ? '/videos/law-office-mobile.mp4' : '/videos/law-office.mp4'}
         autoPlay
         loop
