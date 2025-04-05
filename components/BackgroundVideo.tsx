@@ -4,37 +4,80 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function BackgroundVideo() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Función para manejar el cambio de tamaño de ventana
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
   };
 
   // Efecto para manejar el evento resize
   useEffect(() => {
-    // Inicializar el estado
     handleResize();
-
-    // Agregar listener
     window.addEventListener('resize', handleResize);
-
-    // Limpiar listener
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Efecto para reiniciar el video cuando cambia la fuente
+  // Efecto para precargar recursos
   useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      video.load(); // Recargar el video
-      video.play().catch(error => {
-        console.error('Error al reproducir el video:', error);
-      });
-    }
+    const preloadResources = async () => {
+      if (isMobile) {
+        // Precargar imagen para móviles
+        const img = new Image();
+        img.src = '/videos/law-office-mobile.jpg';
+        await new Promise((resolve) => {
+          img.onload = resolve;
+        });
+      } else {
+        // Precargar video para desktop
+        const video = videoRef.current;
+        if (video) {
+          await new Promise((resolve) => {
+            video.onloadeddata = resolve;
+            video.load();
+          });
+        }
+      }
+      setIsLoaded(true);
+    };
+
+    preloadResources();
   }, [isMobile]);
+
+  // Efecto para manejar el efecto de paralaje en móviles
+  useEffect(() => {
+    if (!isMobile || !containerRef.current) return;
+
+    const container = containerRef.current;
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const diff = currentScrollY - lastScrollY;
+      
+      if (container) {
+        const translateY = diff * 0.5; // Factor de paralaje suave
+        container.style.transform = `translateY(${translateY}px)`;
+      }
+      
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isMobile]);
+
+  if (!isLoaded) {
+    return (
+      <div className="absolute inset-0 w-full h-full bg-[#2d3436] animate-pulse" />
+    );
+  }
 
   return (
     <div 
+      ref={containerRef}
       className="absolute inset-0 w-full h-full overflow-hidden"
       style={{
         position: 'absolute',
@@ -45,28 +88,35 @@ export default function BackgroundVideo() {
         zIndex: 0
       }}
     >
-      <video
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute w-full h-full"
-        style={{
-          objectFit: 'cover',
-          width: '100%',
-          height: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0
-        }}
-      >
-        <source 
-          src={isMobile ? "/videos/law-office-mobile.mp4" : "/videos/law-office.mp4"} 
-          type="video/mp4" 
+      {isMobile ? (
+        <div
+          className="absolute inset-0 w-full h-full bg-cover bg-center"
+          style={{
+            backgroundImage: 'url(/videos/law-office-mobile.jpg)',
+            transform: 'scale(1.1)', // Pequeño zoom para evitar bordes blancos durante el paralaje
+          }}
         />
-        Tu navegador no soporta el elemento de video.
-      </video>
+      ) : (
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute w-full h-full"
+          style={{
+            objectFit: 'cover',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          }}
+        >
+          <source src="/videos/law-office.mp4" type="video/mp4" />
+          Tu navegador no soporta el elemento de video.
+        </video>
+      )}
       <div 
         className="absolute inset-0 bg-black bg-opacity-50"
         style={{
