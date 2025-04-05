@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #2d3436;    /* Negro suave */
+  --secondary: #636e72;  /* Gris medio */
+  --accent: #b2bec3;     /* Gris claro */
+  --background: #ffffff; /* Blanco */
+  --text: #2d3436;       /* Negro suave */
+}
+
+@layer base {
+  body {
+    @apply bg-white text-gray-800;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#2d3436] text-white px-6 py-2 rounded-md hover:bg-[#1e1e1e] transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-[#636e72] text-white px-6 py-2 rounded-md hover:bg-[#4a525a] transition-colors;
+  }
+
+  .text-primary {
+    @apply text-[#2d3436];
+  }
+
+  .text-secondary {
+    @apply text-[#636e72];
+  }
+
+  .border-primary {
+    @apply border-[#2d3436];
+  }
+
+  .border-secondary {
+    @apply border-[#636e72];
+  }
+}
