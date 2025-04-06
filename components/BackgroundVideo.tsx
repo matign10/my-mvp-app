@@ -1,54 +1,50 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
 
 export default function BackgroundVideo() {
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    setIsMounted(true);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
-  if (!isMounted) {
-    return (
-      <div className="fixed inset-0 w-full h-full -z-10 bg-[#2d3436]">
-        <div className="absolute inset-0 bg-black/50" />
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play().catch(error => {
+        console.error('Error al reproducir el video:', error);
+      });
+    }
+  }, [isMobile]);
 
   return (
     <div className="fixed inset-0 w-full h-full -z-10">
-      <div className="relative w-full h-full">
-        <Image
-          src="/videos/law-office-mobile.jpg"
-          alt="Law Office Background"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-          quality={100}
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ objectFit: 'cover' }}
+      >
+        <source
+          src={isMobile ? "/videos/law-office-mobile.mp4" : "/videos/law-office.mp4"}
+          type="video/mp4"
         />
-        <div className="absolute inset-0 bg-black/30" />
-      </div>
-      <style jsx global>{`
-        @keyframes kenBurns {
-          0% {
-            transform: scale(1);
-          }
-          50% {
-            transform: scale(1.1);
-          }
-          100% {
-            transform: scale(1);
-          }
-        }
-        .animate-ken-burns {
-          animation: kenBurns 20s ease-in-out infinite;
-          will-change: transform;
-        }
-      `}</style>
+      </video>
+      <div className="absolute inset-0 bg-black/50" />
     </div>
   );
 } 
