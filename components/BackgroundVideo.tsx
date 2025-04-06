@@ -6,8 +6,21 @@ import styles from './BackgroundVideo.module.css';
 export default function BackgroundVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoError, setVideoError] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   
   useEffect(() => {
+    // Detectar si es dispositivo móvil
+    const checkMobile = () => {
+      const width = window.innerWidth;
+      setIsMobile(width <= 767);
+    };
+    
+    // Verificar al inicio
+    checkMobile();
+    
+    // Escuchar cambios de tamaño
+    window.addEventListener('resize', checkMobile);
+    
     // Intento de reproducción manual
     if (videoRef.current) {
       const playVideo = async () => {
@@ -34,6 +47,7 @@ export default function BackgroundVideo() {
     }
     
     return () => {
+      window.removeEventListener('resize', checkMobile);
       if (videoRef.current) {
         videoRef.current.removeEventListener('error', handleVideoError);
       }
@@ -54,9 +68,8 @@ export default function BackgroundVideo() {
           playsInline
           poster="/videos/law-office-mobile.jpg"
         >
-          <source src="/videos/background.mp4" type="video/mp4" />
+          <source src={isMobile ? "/videos/law-office-mobile.mp4" : "/videos/background.mp4"} type="video/mp4" />
           <source src="/videos/law-office-optimized.mp4" type="video/mp4" />
-          <source src="/videos/law-office.mp4" type="video/mp4" />
         </video>
       )}
       <div className={styles.overlay}></div>

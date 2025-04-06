@@ -16,6 +16,16 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
+}
+
+@media (max-width: 767px) {
+  .video {
+    object-position: 45% center;
+    height: 100%;
+    width: auto;
+    min-width: 100%;
+  }
 }
 
 .overlay {
@@ -35,7 +45,7 @@
   width: 100%;
   height: 100%;
   background-image: url('/videos/law-office-mobile.jpg');
-  background-position: center;
+  background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
 } 
