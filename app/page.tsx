@@ -9,9 +9,9 @@ export default function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative min-h-screen bg-[#2d3436] overflow-hidden">
+      <section className="relative min-h-screen overflow-hidden bg-[#2d3436]">
         <BackgroundVideo />
-        <div className="relative max-w-screen-xl mx-auto px-4 h-full flex items-center" style={{ zIndex: 10 }}>
+        <div className="relative z-10 max-w-screen-xl mx-auto px-4 h-full flex items-center">
           <div className="max-w-2xl text-white pt-[104px] md:pt-[120px]">
             <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
               Excelencia Legal al Servicio de Nuestros Clientes

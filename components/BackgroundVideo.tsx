@@ -1,100 +1,65 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import styles from './BackgroundVideo.module.css';
 
 export default function BackgroundVideo() {
-  const [isMobile, setIsMobile] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  // Determinar si es móvil
+  const [videoError, setVideoError] = useState(false);
+  
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  // Manejar la carga del video
-  useEffect(() => {
+    // Intento de reproducción manual
     if (videoRef.current) {
-      // Eventos para manejar estados del video
-      const handleLoadStart = () => {
-        setIsLoading(true);
-        setHasError(false);
-      };
-      
-      const handleCanPlay = () => {
-        setIsLoading(false);
-        videoRef.current?.play().catch(error => {
-          console.error('Error al reproducir el video:', error);
-          setHasError(true);
-        });
-      };
-      
-      const handleError = (e: any) => {
-        console.error('Error con el video:', e);
-        setHasError(true);
-        setIsLoading(false);
-      };
-
-      // Agregar event listeners
-      videoRef.current.addEventListener('loadstart', handleLoadStart);
-      videoRef.current.addEventListener('canplay', handleCanPlay);
-      videoRef.current.addEventListener('error', handleError);
-      
-      // Forzar la recarga del video cuando cambia la fuente
-      videoRef.current.load();
-
-      // Cleanup
-      return () => {
-        if (videoRef.current) {
-          videoRef.current.removeEventListener('loadstart', handleLoadStart);
-          videoRef.current.removeEventListener('canplay', handleCanPlay);
-          videoRef.current.removeEventListener('error', handleError);
+      const playVideo = async () => {
+        try {
+          await videoRef.current?.play();
+          console.log('¡Video reproducido con éxito!');
+        } catch (err) {
+          console.error('Error al reproducir el video:', err);
+          setVideoError(true);
         }
       };
+      
+      playVideo();
     }
-  }, [isMobile]);
-
-  // Ruta del video actual
-  const videoSrc = isMobile ? "/videos/law-office-mobile.mp4" : "/videos/law-office.mp4";
-
+    
+    // Manejador de errores para el video
+    const handleVideoError = () => {
+      console.error('Error al cargar el video');
+      setVideoError(true);
+    };
+    
+    if (videoRef.current) {
+      videoRef.current.addEventListener('error', handleVideoError);
+    }
+    
+    return () => {
+      if (videoRef.current) {
+        videoRef.current.removeEventListener('error', handleVideoError);
+      }
+    };
+  }, []);
+  
   return (
-    <div className="fixed inset-0 w-full h-full" style={{ zIndex: -10 }}>
-      {isLoading && (
-        <div className="absolute inset-0 bg-[#2d3436] flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
-        </div>
+    <div className={styles.videoContainer}>
+      {videoError ? (
+        <div className={styles.fallback}></div>
+      ) : (
+        <video 
+          ref={videoRef}
+          className={styles.video}
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          poster="/videos/law-office-mobile.jpg"
+        >
+          <source src="/videos/background.mp4" type="video/mp4" />
+          <source src="/videos/law-office-optimized.mp4" type="video/mp4" />
+          <source src="/videos/law-office.mp4" type="video/mp4" />
+        </video>
       )}
-      
-      {hasError && (
-        <div className="absolute inset-0 bg-[#2d3436]">
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-      )}
-      
-      <video
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ objectFit: 'cover' }}
-      >
-        <source src={videoSrc} type="video/mp4" />
-      </video>
-      
-      <div className="absolute inset-0 bg-black/50" />
+      <div className={styles.overlay}></div>
     </div>
   );
 } 
