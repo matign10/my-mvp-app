@@ -10,10 +10,8 @@ export default function Home() {
     <main>
       {/* Hero Section */}
       <section className="relative min-h-screen bg-[#2d3436] overflow-hidden">
-        <div className="absolute inset-0 w-full h-full">
-          <BackgroundVideo />
-        </div>
-        <div className="relative max-w-screen-xl mx-auto px-4 h-full flex items-center" style={{ zIndex: 2 }}>
+        <BackgroundVideo />
+        <div className="relative max-w-screen-xl mx-auto px-4 h-full flex items-center" style={{ zIndex: 10 }}>
           <div className="max-w-2xl text-white pt-[104px] md:pt-[120px]">
             <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
               Excelencia Legal al Servicio de Nuestros Clientes
