@@ -12,7 +12,7 @@ export default function Home() {
       <section className="relative min-h-screen overflow-hidden bg-[#2d3436]">
         <BackgroundVideo />
         <div className="relative z-10 max-w-screen-xl mx-auto px-4 h-full flex items-center">
-          <div className="max-w-2xl text-white pt-[104px] md:pt-[120px]">
+          <div className="max-w-2xl text-white pt-[120px] md:pt-[150px]">
             <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
               Excelencia Legal al Servicio de Nuestros Clientes
             </h1>

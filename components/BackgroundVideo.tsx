@@ -6,38 +6,56 @@ import styles from './BackgroundVideo.module.css';
 export default function BackgroundVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoError, setVideoError] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   
+  // Detectar dispositivos móviles
   useEffect(() => {
-    // Intento de reproducción manual
-    if (videoRef.current) {
-      const playVideo = async () => {
-        try {
-          await videoRef.current?.play();
-        } catch (err) {
-          console.error('Error al reproducir el video:', err);
-          setVideoError(true);
-        }
-      };
-      
-      playVideo();
-    }
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 767);
+    };
     
-    // Manejador de errores para el video
-    const handleVideoError = () => {
+    // Verificar inmediatamente
+    checkMobile();
+    
+    // Escuchar cambios de tamaño
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+  
+  // Reproducir video y manejar errores
+  useEffect(() => {
+    if (!videoRef.current) return;
+    
+    const handleCanPlay = () => {
+      videoRef.current?.play().catch(err => {
+        console.error('Error al reproducir el video:', err);
+        setVideoError(true);
+      });
+    };
+    
+    const handleError = () => {
       console.error('Error al cargar el video');
       setVideoError(true);
     };
     
-    if (videoRef.current) {
-      videoRef.current.addEventListener('error', handleVideoError);
-    }
+    // Agregar event listeners
+    videoRef.current.addEventListener('canplay', handleCanPlay);
+    videoRef.current.addEventListener('error', handleError);
     
+    // Forzar carga del video
+    videoRef.current.load();
+    
+    // Limpiar event listeners
     return () => {
       if (videoRef.current) {
-        videoRef.current.removeEventListener('error', handleVideoError);
+        videoRef.current.removeEventListener('canplay', handleCanPlay);
+        videoRef.current.removeEventListener('error', handleError);
       }
     };
-  }, []);
+  }, [isMobile]); // Recargar video cuando cambia a/desde móvil
   
   return (
     <div className={styles.videoContainer}>
@@ -51,9 +69,12 @@ export default function BackgroundVideo() {
           loop 
           muted 
           playsInline
+          preload="auto"
         >
-          <source src="/videos/law-office.mp4" type="video/mp4" />
-          <source src="/videos/law-office-mobile.mp4" type="video/mp4" />
+          <source 
+            src={isMobile ? "/videos/law-office-mobile.mp4" : "/videos/law-office.mp4"} 
+            type="video/mp4" 
+          />
         </video>
       )}
       <div className={styles.overlay}></div>

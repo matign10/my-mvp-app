@@ -1,23 +1,32 @@
 .videoContainer {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  z-index: 0;
+  z-index: -1;
   background-color: #2d3436;
 }
 
 .video {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Centro visual con ligera tendencia hacia arriba para ver contenido importante */
-  object-position: center 40%;
+  /* Ajustamos para que la balanza de justicia sea visible */
+  object-position: center 20%; 
+}
+
+/* Media query específico para móviles */
+@media (max-width: 767px) {
+  .video {
+    /* En móviles centramos el video y lo ampliamos para cubrir bien */
+    object-position: 60% top;
+    width: 120%; /* Hacemos el video más ancho que el contenedor */
+    max-width: none;
+    left: -10%; /* Compensamos para centrar */
+  }
 }
 
 .overlay {
@@ -26,7 +35,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6); /* Oscurecemos más para mejorar contraste */
   z-index: 1;
 }
 
