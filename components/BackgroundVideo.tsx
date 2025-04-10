@@ -51,9 +51,9 @@ export default function BackgroundVideo() {
           loop 
           muted 
           playsInline
-          poster="/videos/law-office-mobile.jpg"
         >
-          <source src="/videos/law-office-optimized.mp4" type="video/mp4" />
+          <source src="/videos/law-office.mp4" type="video/mp4" />
+          <source src="/videos/law-office-mobile.mp4" type="video/mp4" />
         </video>
       )}
       <div className={styles.overlay}></div>
