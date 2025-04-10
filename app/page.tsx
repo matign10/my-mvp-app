@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import BackgroundVideo from "@/components/BackgroundVideo";
+import BackgroundImage from "@/components/BackgroundVideo";
 import GoogleMap from "@/components/GoogleMap";
 import PracticeArea from "@/components/PracticeArea";
 import ContactForm from "@/components/ContactForm";
@@ -10,7 +10,7 @@ export default function Home() {
     <main>
       {/* Hero Section */}
       <section className="relative min-h-screen overflow-hidden bg-[#2d3436]">
-        <BackgroundVideo />
+        <BackgroundImage />
         <div className="relative z-10 max-w-screen-xl mx-auto px-4 h-full flex items-center">
           <div className="max-w-2xl text-white pt-[150px] md:pt-[180px]">
             <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
