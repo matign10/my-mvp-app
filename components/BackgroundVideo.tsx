@@ -5,6 +5,7 @@ import styles from './BackgroundVideo.module.css';
 
 export default function BackgroundVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [videoError, setVideoError] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -12,7 +13,21 @@ export default function BackgroundVideo() {
   // Detectar dispositivos móviles
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 767);
+      const width = window.innerWidth;
+      const mobile = width <= 767;
+      
+      if (mobile !== isMobile) {
+        setIsMobile(mobile);
+        
+        // Al cambiar entre móvil y desktop, ajustamos el container
+        if (containerRef.current) {
+          if (mobile) {
+            console.log('Ajustando para móvil');
+          } else {
+            console.log('Ajustando para desktop');
+          }
+        }
+      }
     };
     
     // Verificar inmediatamente
@@ -24,7 +39,7 @@ export default function BackgroundVideo() {
     return () => {
       window.removeEventListener('resize', checkMobile);
     };
-  }, []);
+  }, [isMobile]);
   
   // Reproducir video y manejar errores
   useEffect(() => {
@@ -77,7 +92,7 @@ export default function BackgroundVideo() {
   }, [isMobile]); // Recargar video cuando cambia a/desde móvil
   
   return (
-    <div className={styles.videoContainer}>
+    <div ref={containerRef} className={styles.videoContainer}>
       {videoError ? (
         <div className={styles.fallback}>
           <div style={{ padding: '20px', color: 'white' }}>
@@ -88,7 +103,7 @@ export default function BackgroundVideo() {
         <>
           <video 
             ref={videoRef}
-            className={styles.video}
+            className={isMobile ? styles.videoMobile : styles.video}
             autoPlay 
             loop 
             muted 
@@ -101,17 +116,7 @@ export default function BackgroundVideo() {
             />
           </video>
           {!isLoaded && (
-            <div style={{ 
-              position: 'absolute', 
-              top: 0, 
-              left: 0, 
-              width: '100%', 
-              height: '100%', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              backgroundColor: '#2d3436'
-            }}>
+            <div className={styles.loadingScreen}>
               <div className="animate-spin h-10 w-10 border-4 border-white rounded-full border-t-transparent"></div>
             </div>
           )}

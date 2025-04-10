@@ -9,6 +9,7 @@
   background-color: #2d3436;
 }
 
+/* Video para pantallas grandes (desktop) */
 .video {
   position: absolute;
   top: 0;
@@ -16,16 +17,24 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Ajustamos para que la balanza de justicia sea visible */
-  object-position: center 20%; 
+  /* Colocamos el video un poco más arriba para ver la balanza */
+  object-position: center 20%;
 }
 
-/* Media query específico para móviles */
-@media (max-width: 767px) {
-  .video {
-    /* En móviles centramos el video y lo ampliamos para cubrir bien */
-    object-position: 60% top;
-  }
+/* Video específico para móviles - enfoque completamente distinto */
+.videoMobile {
+  position: absolute;
+  /* Damos un posicionamiento específico para móviles */
+  top: -10%;
+  left: -10%;
+  /* Más grande que el contenedor para evitar bordes negros */
+  width: 120%;
+  height: 120%;
+  /* Más centrado para ver la figura central */
+  object-fit: cover;
+  object-position: center top;
+  /* Escalamos a un buen tamaño para evitar pixelación */
+  transform: scale(1);
 }
 
 .overlay {
@@ -34,7 +43,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Oscurecemos más para mejorar contraste */
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 1;
 }
 
@@ -44,5 +53,17 @@
   left: 0;
   width: 100%;
   height: 100%;
+  background-color: #2d3436;
+}
+
+.loadingScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #2d3436;
 } 
