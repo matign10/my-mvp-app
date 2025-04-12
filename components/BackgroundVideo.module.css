@@ -122,25 +122,80 @@
   overflow: hidden;
 }
 
-.video {
+/* Usamos un gradiente en lugar de imágenes */
+.backgroundImage {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  transform: translateX(-50%) translateY(-50%);
-  object-fit: cover;
-  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #2c3e50 0%, #4a6572 50%, #2c3e50 100%);
+  background-size: 200% 200%;
+  animation: gradientAnimation 15s ease infinite;
 }
 
-/* Enfoque adicional para dispositivos móviles */
-@media (max-width: 768px) {
-  .video {
-    width: 100%;
-    height: 100%;
-    object-position: center center;
+/* Patrón de escala de justicia superpuesto */
+.backgroundImage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 10px
+    );
+  background-size: 20px 20px;
+}
+
+/* Efecto de "luz" moviéndose */
+.backgroundImage::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  animation: moveLight 15s infinite linear;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes moveLight {
+  0% {
+    transform: translateX(-25%) translateY(-25%);
+  }
+  25% {
+    transform: translateX(25%) translateY(-25%);
+  }
+  50% {
+    transform: translateX(25%) translateY(25%);
+  }
+  75% {
+    transform: translateX(-25%) translateY(25%);
+  }
+  100% {
+    transform: translateX(-25%) translateY(-25%);
   }
 }
 
@@ -150,8 +205,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: #1c1c1d;
-  opacity: 0.5;
-  mix-blend-mode: overlay;
+  background: rgba(0, 0, 0, 0.4);
   z-index: 1;
 } 
