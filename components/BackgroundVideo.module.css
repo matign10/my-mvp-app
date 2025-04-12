@@ -119,15 +119,29 @@
 .hero {
   min-height: 100vh;
   position: relative;
+  overflow: hidden;
 }
 
 .video {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translateX(-50%) translateY(-50%);
   object-fit: cover;
+  z-index: 0;
+}
+
+/* Enfoque adicional para dispositivos móviles */
+@media (max-width: 768px) {
+  .video {
+    width: 100%;
+    height: 100%;
+    object-position: center center;
+  }
 }
 
 .capa {
@@ -139,4 +153,5 @@
   background: #1c1c1d;
   opacity: 0.5;
   mix-blend-mode: overlay;
+  z-index: 1;
 } 
