@@ -4,13 +4,18 @@ import { useEffect, useState } from 'react';
 
 export default function BackgroundVideo() {
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     // Asegurarnos de que el script de Cloudinary esté cargado
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/cloudinary-video-player@1.9.9/dist/cld-video-player.min.js';
     script.async = true;
-    document.body.appendChild(script);
+    script.onerror = () => {
+      console.error('Error al cargar el script de Cloudinary');
+      setHasError(true);
+      setIsLoading(false);
+    };
 
     // Agregar el CSS necesario
     const link = document.createElement('link');
@@ -23,7 +28,14 @@ export default function BackgroundVideo() {
       video.onloadeddata = () => {
         setIsLoading(false);
       };
+      video.onerror = () => {
+        console.error('Error al cargar el video');
+        setHasError(true);
+        setIsLoading(false);
+      };
     }
+
+    document.body.appendChild(script);
 
     return () => {
       // Limpieza al desmontar
@@ -31,6 +43,14 @@ export default function BackgroundVideo() {
       document.head.removeChild(link);
     };
   }, []);
+
+  if (hasError) {
+    return (
+      <div className="absolute inset-0 w-full h-full overflow-hidden bg-gray-900">
+        <div className="absolute inset-0 bg-black bg-opacity-40" />
+      </div>
+    );
+  }
 
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden">
@@ -46,6 +66,7 @@ export default function BackgroundVideo() {
         muted
         loop
         playsInline
+        poster="/images/video-poster.jpg"
       >
         <source
           src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,f_auto/ihop10gv427qvocsm2e4.mp4`}
