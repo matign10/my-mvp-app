@@ -2,16 +2,23 @@
 import { useState, useEffect } from "react"
 
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false)
+  // Inicializar con null para indicar que aún no se ha determinado
+  const [matches, setMatches] = useState<boolean | null>(null)
   
   useEffect(() => {
-    const media = window.matchMedia(query)
-    setMatches(media.matches)
-    
-    const listener = () => setMatches(media.matches)
-    media.addEventListener("change", listener)
-    return () => media.removeEventListener("change", listener)
+    // Solo ejecutar en el cliente
+    if (typeof window !== 'undefined') {
+      const media = window.matchMedia(query)
+      
+      // Establecer el valor inicial
+      setMatches(media.matches)
+      
+      const listener = () => setMatches(media.matches)
+      media.addEventListener("change", listener)
+      return () => media.removeEventListener("change", listener)
+    }
   }, [query])
   
-  return matches
+  // Devolver false durante la hidratación (SSR)
+  return matches === null ? false : matches
 } 

@@ -17,7 +17,7 @@ export default function Home() {
         className="z-0"
       />
       
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-white">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-white px-4">
         <h1 className="text-4xl md:text-6xl font-bold text-center mb-6">
           Tu Firma Legal de Confianza
         </h1>
