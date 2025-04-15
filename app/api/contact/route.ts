@@ -4,13 +4,17 @@ import { sendContactEmail } from '@/lib/emailService';
 
 export async function POST(request: Request) {
   try {
+    console.log('Iniciando procesamiento de contacto...');
     const body = await request.json();
     const { name, email, subject, message } = body;
 
+    console.log('Datos recibidos:', { name, email, subject });
+
     // Validar campos requeridos
     if (!name || !email || !subject || !message) {
+      console.log('Error: Campos faltantes');
       return NextResponse.json(
-        { error: 'Todos los campos son requeridos' },
+        { error: 'Por favor, complete todos los campos' },
         { status: 400 }
       );
     }
@@ -18,12 +22,14 @@ export async function POST(request: Request) {
     // Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log('Error: Formato de email inválido');
       return NextResponse.json(
-        { error: 'El formato del email no es válido' },
+        { error: 'Por favor, ingrese un email válido' },
         { status: 400 }
       );
     }
 
+    console.log('Intentando guardar en Supabase...');
     // Guardar mensaje en la base de datos
     const { error: dbError } = await supabase
       .from('messages')
@@ -39,13 +45,18 @@ export async function POST(request: Request) {
       ]);
 
     if (dbError) {
-      console.error('Error al guardar mensaje:', dbError);
+      console.error('Error detallado de Supabase:', {
+        code: dbError.code,
+        message: dbError.message,
+        details: dbError.details
+      });
       return NextResponse.json(
-        { error: 'Error al procesar el mensaje' },
+        { error: 'No pudimos procesar su mensaje. Por favor, intente nuevamente más tarde.' },
         { status: 500 }
       );
     }
 
+    console.log('Mensaje guardado en Supabase, intentando enviar email...');
     // Enviar email de notificación
     const { success: emailSuccess, error: emailError } = await sendContactEmail({
       name,
@@ -56,17 +67,24 @@ export async function POST(request: Request) {
 
     if (!emailSuccess) {
       console.error('Error al enviar email:', emailError);
-      // No retornamos error al cliente si falla el email, solo lo registramos
+      return NextResponse.json(
+        { error: 'Hubo un problema al enviar su mensaje. Por favor, intente nuevamente.' },
+        { status: 500 }
+      );
     }
 
+    console.log('Proceso completado exitosamente');
     return NextResponse.json(
       { message: 'Mensaje enviado correctamente' },
       { status: 200 }
     );
-  } catch (error) {
-    console.error('Error en el endpoint de contacto:', error);
+  } catch (error: any) {
+    console.error('Error detallado en el endpoint:', {
+      message: error.message,
+      stack: error.stack
+    });
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: 'No pudimos procesar su mensaje. Por favor, intente nuevamente más tarde.' },
       { status: 500 }
     );
   }

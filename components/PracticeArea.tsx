@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 interface PracticeAreaProps {
   title: string;
   description: string;
@@ -10,17 +8,24 @@ interface PracticeAreaProps {
     description: string;
     services: string[];
   };
+  isExpanded: boolean;
+  onToggle: () => void;
 }
 
-export default function PracticeArea({ title, description, icon, expandedContent }: PracticeAreaProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
+export default function PracticeArea({ 
+  title, 
+  description, 
+  icon, 
+  expandedContent,
+  isExpanded,
+  onToggle 
+}: PracticeAreaProps) {
   return (
     <div 
       className={`p-6 border border-[#b2bec3] hover:border-[#2d3436] transition-all duration-300 cursor-pointer ${
-        isExpanded ? 'bg-white shadow-lg' : 'bg-white'
-      }`}
-      onClick={() => setIsExpanded(!isExpanded)}
+        isExpanded ? 'bg-white shadow-lg h-auto' : 'bg-white h-[200px]'
+      } flex flex-col`}
+      onClick={onToggle}
     >
       <div className="flex items-start justify-between">
         <div className="mb-4 transform group-hover:scale-110 transition-transform">
@@ -30,7 +35,7 @@ export default function PracticeArea({ title, description, icon, expandedContent
           className="text-[#2d3436] hover:text-[#636e72] transition-colors"
           onClick={(e) => {
             e.stopPropagation();
-            setIsExpanded(!isExpanded);
+            onToggle();
           }}
         >
           <svg 
@@ -45,7 +50,7 @@ export default function PracticeArea({ title, description, icon, expandedContent
       </div>
       
       <h3 className="text-xl font-bold text-[#2d3436] mb-2 tracking-tight">{title}</h3>
-      <p className="text-[#636e72]">{description}</p>
+      <p className="text-[#636e72] line-clamp-2">{description}</p>
 
       {isExpanded && (
         <div className="mt-6 space-y-4 animate-fadeIn">

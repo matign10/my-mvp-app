@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import ThemeToggle from './ThemeToggle';
 
 const navigation = [
   { name: 'Inicio', href: '/' },
@@ -29,12 +28,12 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-800 fixed w-full z-20 top-0 start-0 border-b border-[#b2bec3] dark:border-gray-700 shadow-sm">
+    <nav className="bg-white fixed w-full z-20 top-0 start-0 border-b border-[#b2bec3] shadow-sm">
       {/* Barra principal */}
       <div className="max-w-screen-xl mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center">
-            <span className="text-2xl font-bold text-[#2d3436] dark:text-white tracking-tight drop-shadow-sm">
+            <span className="text-2xl font-bold text-[#2d3436] tracking-tight drop-shadow-sm">
               ECEN
             </span>
           </Link>
@@ -48,14 +47,13 @@ export default function Navbar() {
                 onClick={(e) => handleClick(e, item.href)}
                 className={`text-sm font-medium ${
                   pathname === item.href
-                    ? 'text-[#2d3436] dark:text-white border-b-2 border-[#2d3436] dark:border-white'
-                    : 'text-[#636e72] dark:text-gray-300 hover:text-[#2d3436] dark:hover:text-white'
+                    ? 'text-[#2d3436] border-b-2 border-[#2d3436]'
+                    : 'text-[#636e72] hover:text-[#2d3436]'
                 }`}
               >
                 {item.name}
               </Link>
             ))}
-            <ThemeToggle />
           </div>
 
           {/* Botón móvil */}

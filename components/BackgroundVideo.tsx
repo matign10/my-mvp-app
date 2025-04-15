@@ -1,83 +1,59 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function BackgroundVideo() {
-  const desktopVideoRef = useRef<HTMLVideoElement>(null);
-  const mobileVideoRef = useRef<HTMLVideoElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Función para verificar si es móvil
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-    };
+    // Asegurarnos de que el script de Cloudinary esté cargado
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/cloudinary-video-player@1.9.9/dist/cld-video-player.min.js';
+    script.async = true;
+    document.body.appendChild(script);
 
-    // Verificar al inicio
-    checkMobile();
+    // Agregar el CSS necesario
+    const link = document.createElement('link');
+    link.href = 'https://unpkg.com/cloudinary-video-player@1.9.9/dist/cld-video-player.min.css';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
 
-    // Escuchar cambios en el tamaño de ventana
-    window.addEventListener('resize', checkMobile);
+    const video = document.getElementById('hero-video') as HTMLVideoElement;
+    if (video) {
+      video.onloadeddata = () => {
+        setIsLoading(false);
+      };
+    }
 
     return () => {
-      window.removeEventListener('resize', checkMobile);
+      // Limpieza al desmontar
+      document.body.removeChild(script);
+      document.head.removeChild(link);
     };
   }, []);
 
-  // Reproducir videos cuando cambia el estado móvil
-  useEffect(() => {
-    const playVideo = () => {
-      if (isMobile) {
-        if (mobileVideoRef.current) {
-          mobileVideoRef.current.play().catch(e => console.log('Error al reproducir video móvil:', e));
-        }
-      } else {
-        if (desktopVideoRef.current) {
-          desktopVideoRef.current.play().catch(e => console.log('Error al reproducir video desktop:', e));
-        }
-      }
-    };
-
-    playVideo();
-  }, [isMobile]);
-
   return (
-    <>
-      {/* Capa de video para escritorio */}
-      {!isMobile && (
-        <div className="absolute inset-0 w-full h-full">
-          <video
-            ref={desktopVideoRef}
-            className="absolute top-0 left-0 w-full h-[120vh] object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-          >
-            <source src="/videos/law-office.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/20 dark:from-black/70 dark:via-black/50 dark:to-black/40"></div>
-        </div>
+    <div className="absolute inset-0 w-full h-full overflow-hidden">
+      {isLoading && (
+        <div className="absolute inset-0 bg-gray-900 animate-pulse" />
       )}
-
-      {/* Capa de video para móvil */}
-      {isMobile && (
-        <div className="absolute inset-0 w-full h-full">
-          <video
-            ref={mobileVideoRef}
-            className="absolute top-0 left-0 w-full h-full object-contain md:object-cover"
-            style={{ objectPosition: 'center 20%' }}
-            autoPlay
-            loop
-            muted
-            playsInline
-          >
-            <source src="/videos/law-office-mobile.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/20 dark:from-black/70 dark:via-black/50 dark:to-black/40"></div>
-        </div>
-      )}
-    </>
+      <video
+        id="hero-video"
+        className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-500 ${
+          isLoading ? 'opacity-0' : 'opacity-100'
+        }`}
+        autoPlay
+        muted
+        loop
+        playsInline
+      >
+        <source
+          src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,f_auto/ihop10gv427qvocsm2e4.mp4`}
+          type="video/mp4"
+        />
+      </video>
+      {/* Overlay oscuro para mejorar la legibilidad del texto */}
+      <div className="absolute inset-0 bg-black bg-opacity-40" />
+    </div>
   );
 }
