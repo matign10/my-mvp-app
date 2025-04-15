@@ -11,6 +11,7 @@ export default function Home() {
     <main className="relative min-h-screen">
       <VideoBackground 
         videoUrl="/videos/law-office.mp4"
+        mobileVideoSrc="/videos/law-office-mobile.mp4"
         fallbackImageUrl="/images/law-office-fallback.jpg"
         overlayOpacity={0.5}
         className="z-0"

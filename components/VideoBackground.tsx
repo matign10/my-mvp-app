@@ -2,9 +2,11 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './VideoBackground.module.css';
+import { useMediaQuery } from '../hooks/use-media-query';
 
 interface VideoBackgroundProps {
   videoUrl: string;
+  mobileVideoSrc?: string;
   fallbackImageUrl: string;
   overlayOpacity?: number;
   className?: string;
@@ -12,12 +14,17 @@ interface VideoBackgroundProps {
 
 export default function VideoBackground({
   videoUrl,
+  mobileVideoSrc,
   fallbackImageUrl,
   overlayOpacity = 0.5,
   className = '',
 }: VideoBackgroundProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isVideoSupported, setIsVideoSupported] = useState(true);
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  
+  // Determinar qué video usar basado en el dispositivo
+  const currentVideoUrl = isMobile && mobileVideoSrc ? mobileVideoSrc : videoUrl;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -31,6 +38,14 @@ export default function VideoBackground({
     return () => video.removeEventListener('error', handleError);
   }, []);
 
+  // Actualizar la fuente del video cuando cambia el dispositivo
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.src = currentVideoUrl;
+      videoRef.current.load();
+    }
+  }, [currentVideoUrl]);
+
   return (
     <div className={`${styles.videoContainer} ${className}`}>
       {isVideoSupported ? (
@@ -41,8 +56,9 @@ export default function VideoBackground({
           muted
           loop
           playsInline
+          key={currentVideoUrl} // Forzar re-render cuando cambia la URL
         >
-          <source src={videoUrl} type="video/mp4" />
+          <source src={currentVideoUrl} type="video/mp4" />
         </video>
       ) : (
         <img
