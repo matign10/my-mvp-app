@@ -43,12 +43,17 @@
   .videoContainer {
     position: relative;
     height: 100vh;
+    /* Asegurar que el contenedor mantenga su altura en móviles */
+    min-height: 100vh;
+    max-height: 100vh;
   }
   
   .video {
     object-position: center;
+    /* Asegurar que el video cubra todo el contenedor */
     width: 100%;
     height: 100%;
+    object-fit: cover;
   }
 }
 

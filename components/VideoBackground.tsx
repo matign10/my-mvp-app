@@ -22,10 +22,16 @@ export default function VideoBackground({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isVideoSupported, setIsVideoSupported] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
   
   // Determinar qué video usar basado en el dispositivo
   const currentVideoUrl = isMobile && mobileVideoSrc ? mobileVideoSrc : videoUrl;
+
+  // Marcar el componente como montado después de la hidratación
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Manejar la carga inicial del video
   useEffect(() => {
@@ -52,12 +58,29 @@ export default function VideoBackground({
 
   // Actualizar la fuente del video cuando cambia el dispositivo
   useEffect(() => {
-    if (videoRef.current) {
+    if (videoRef.current && isMounted) {
       setIsLoading(true);
       videoRef.current.src = currentVideoUrl;
       videoRef.current.load();
     }
-  }, [currentVideoUrl]);
+  }, [currentVideoUrl, isMounted]);
+
+  // Si el componente aún no está montado, mostrar la imagen de respaldo
+  if (!isMounted) {
+    return (
+      <div className={`${styles.videoContainer} ${className}`}>
+        <img
+          src={fallbackImageUrl}
+          alt="Background"
+          className={styles.fallbackImage}
+        />
+        <div
+          className={styles.overlay}
+          style={{ opacity: overlayOpacity }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={`${styles.videoContainer} ${className}`}>
