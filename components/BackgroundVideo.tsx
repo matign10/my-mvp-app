@@ -66,10 +66,10 @@ export default function BackgroundVideo() {
         muted
         loop
         playsInline
-        poster="/images/video-poster.jpg"
+        poster="/images/fallback-bg.jpg"
       >
         <source
-          src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,f_auto/ihop10gv427qvocsm2e4.mp4`}
+          src="https://res.cloudinary.com/dogis73ig/video/upload/v1744745295/ihop10gv427qvocsm2e4.mp4"
           type="video/mp4"
         />
       </video>
