@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 // Define las URLs de tus videos
 const HORIZONTAL_VIDEO_URL = "https://res.cloudinary.com/dogis73ig/video/upload/v1744745295/ihop10gv427qvocsm2e4.mp4";
 // --- Reemplaza esta URL con la de tu video vertical ---
-const VERTICAL_VIDEO_URL = "URL_DEL_VIDEO_VERTICAL_AQUI"; // Ejemplo: "https://res.cloudinary.com/../vertical-video.mp4"
+const VERTICAL_VIDEO_URL = "https://res.cloudinary.com/dogis73ig/video/upload/v1745032051/law-office-mobile_online-video-cutter.com_hh0mo6.mp4"; // Ejemplo: "https://res.cloudinary.com/../vertical-video.mp4"
 
 // Punto de corte para considerar 'móvil' (ej. Tailwind 'md' breakpoint es 768px)
 const MOBILE_BREAKPOINT = 768; 
@@ -111,16 +111,6 @@ export default function BackgroundVideo() {
          <img src="/images/fallback-bg.jpg" alt="Background" className="w-full h-full object-cover opacity-50" />
       </div>
     );
-  }
-
-  // Si la URL vertical no está definida, podríamos mostrar un mensaje o el fallback directamente en móvil
-  if (typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT && videoSrc === HORIZONTAL_VIDEO_URL && VERTICAL_VIDEO_URL === "URL_DEL_VIDEO_VERTICAL_AQUI") {
-      console.warn("Video vertical no configurado, mostrando fallback en móvil.");
-       return (
-        <div className="absolute inset-0 w-full h-screen overflow-hidden bg-black">
-           <img src="/images/fallback-bg.jpg" alt="Background" className="w-full h-full object-cover opacity-50" />
-        </div>
-     );
   }
 
   return (
