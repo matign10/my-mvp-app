@@ -76,7 +76,7 @@ export default function BackgroundVideo() {
       <video
         ref={videoRef}
         id="hero-video"
-        className={`absolute w-full h-full object-cover transition-opacity duration-500 ${
+        className={`absolute w-full h-full object-contain object-center md:object-cover md:object-[50%_0%] transition-opacity duration-500 ${
           isLoading ? 'opacity-0' : 'opacity-100'
         }`}
         style={{ 
@@ -85,8 +85,6 @@ export default function BackgroundVideo() {
           left: '0',
           width: '100%',
           height: '100%',
-          objectFit: 'cover',
-          objectPosition: '50% 0%',
           zIndex: '-1'
         }}
         autoPlay
