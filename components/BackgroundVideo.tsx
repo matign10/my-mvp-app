@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 
 // Define las URLs de tus videos
 const HORIZONTAL_VIDEO_URL = "/Videos/DamaJusticiaPC.mp4"; // Asegurar que esta es la URL correcta para PC
-const VERTICAL_VIDEO_URL = "https://res.cloudinary.com/dogis73ig/video/upload/v1745032051/law-office-mobile_online-video-cutter.com_hh0mo6.mp4"; // Video vertical
+const VERTICAL_VIDEO_URL = "/Videos/DamaJusticiaPCMovil.mp4"; // Nueva URL local para móvil
 
 // Punto de corte para considerar 'móvil' (ej. Tailwind 'md' breakpoint es 768px)
 const MOBILE_BREAKPOINT = 768;
