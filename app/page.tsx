@@ -78,12 +78,12 @@ export default function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative sticky top-0 h-screen bg-transparent z-0">
+      <section className="relative h-screen bg-transparent z-0">
         <BackgroundVideo />
         {/* <SimpleClientLogger message="Logger in Hero Section" /> */}
         <div className="relative h-full flex flex-col justify-center z-10 pt-16 pb-10 max-w-screen-xl mx-auto px-4">
           <div className="max-w-2xl text-white">
-            <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight drop-shadow-2xl">
+            <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight drop-shadow-2xl text-white">
               Excelencia Legal al Servicio de Nuestros Clientes
             </h1>
             <p className="text-base md:text-lg mb-8 drop-shadow-xl leading-relaxed">
