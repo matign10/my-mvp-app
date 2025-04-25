@@ -96,10 +96,9 @@ export default function BackgroundVideo() {
 
   if (hasError) {
     // Fallback simplificado si hay error
+    console.error("Error state triggered, rendering fallback background.");
     return (
-      <div className="absolute inset-0 w-full h-screen overflow-hidden bg-black">
-         <img src="/images/fallback-bg.jpg" alt="Background" className="w-full h-full object-cover opacity-50" />
-      </div>
+      <div className="absolute inset-0 w-full h-screen overflow-hidden bg-black" />
     );
   }
 
@@ -110,20 +109,13 @@ export default function BackgroundVideo() {
       {isLoading && (
         <div className="absolute inset-0 bg-gray-900 animate-pulse z-10" />
       )}
-      {/* Poster: Siempre detrás */}
-      <img 
-        src="/images/fallback-bg.jpg" 
-        alt="Background Poster" 
-        className="absolute inset-0 w-full h-full object-cover z-0"
-        aria-hidden="true"
-      />
       {/* Video: Usar key={videoSrc} y source dinámico */}
       <video
         ref={videoRef}
         key={videoSrc} // <-- Clave para forzar recarga al cambiar src
         id="hero-video"
         className={`
-          absolute w-full h-full z-10 
+          absolute w-full h-full z-0 
           object-contain object-center md:object-cover md:object-[50%_0%] 
           transition-opacity duration-500 ease-in-out 
           ${isLoading ? 'opacity-0' : 'opacity-100'}
