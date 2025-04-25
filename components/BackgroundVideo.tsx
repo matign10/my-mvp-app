@@ -12,107 +12,144 @@ const MOBILE_BREAKPOINT = 768;
 export default function BackgroundVideo() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  // Estado para la URL del video actual
-  const [videoSrc, setVideoSrc] = useState(HORIZONTAL_VIDEO_URL);
+  // Iniciar videoSrc como null para evitar mismatch de hidratación
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  // Ref para asegurar que la detección inicial solo corra una vez en el cliente
+  const initialCheckDone = useRef(false); 
 
-  // Efecto para determinar qué video usar basado en el ancho de la pantalla
+  // --- Efecto: Determinar video por tamaño de pantalla (SOLO CLIENT-SIDE) --- 
   useEffect(() => {
+    console.log("[Effect run] Checking screen size...");
     const checkScreenSize = () => {
+      // Solo ejecutar si el componente está montado
+      if (!videoRef.current) return;
+      
       const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
       const targetSrc = isMobile ? VERTICAL_VIDEO_URL : HORIZONTAL_VIDEO_URL;
-      // Solo actualizar si la fuente necesita cambiar (evita bucles)
-      // Comparamos con videoRef.current.currentSrc para ser más precisos
-      if (targetSrc !== videoRef.current?.currentSrc) { 
-          console.log(`Screen check: Setting video source to ${isMobile ? 'VERTICAL' : 'HORIZONTAL'} (${targetSrc})`);
-          setVideoSrc(targetSrc); // Actualizar el estado dispara re-render y el efecto de listeners
-          setIsLoading(true); // Mostrar carga al cambiar fuente
-          // No necesitamos llamar a load() explícitamente aquí,
-          // cambiar la key del video lo fuerza a recargar.
+      
+      // En la primera ejecución (cliente), O si la fuente necesita cambiar por resize
+      if (!initialCheckDone.current || targetSrc !== videoRef.current?.currentSrc) {
+        console.log(`[checkScreenSize] Setting video source to ${isMobile ? 'VERTICAL' : 'HORIZONTAL'} (${targetSrc})`);
+        setVideoSrc(targetSrc); 
+        setIsLoading(true); 
+        if (!initialCheckDone.current) {
+          initialCheckDone.current = true; // Marcar que la comprobación inicial se hizo
+        }
+      } else {
+          console.log("[checkScreenSize] Source is already correct, no change needed.");
       }
     };
     
-    checkScreenSize(); // Ejecutar al montar
+    checkScreenSize(); // Ejecutar al montar en cliente
     window.addEventListener('resize', checkScreenSize);
     
-    return () => window.removeEventListener('resize', checkScreenSize); // Limpiar listener
-    
-  // Solo necesita ejecutarse al montar, la lógica interna maneja cambios
-  }, []); 
+    return () => {
+        console.log("[Effect cleanup] Removing resize listener.");
+        window.removeEventListener('resize', checkScreenSize);
+    }
+  }, []); // Ejecutar solo al montar en el cliente
 
-  // Efecto para manejar la carga y errores del video (simplificado)
+  // --- Efecto: Manejar eventos del video (carga, error, autoplay) --- 
   useEffect(() => {
+    // No hacer nada si videoSrc aún no está definido
+    if (!videoSrc) {
+        console.log("[Effect video events] Skipping, videoSrc is null.");
+        return;
+    }
+
+    console.log(`[Effect video events] Attaching listeners for src: ${videoSrc}`);
     const videoElement = videoRef.current;
     if (!videoElement) return;
 
+    // Resetear estados al cambiar de fuente (por si acaso)
+    setIsLoading(true);
+    setHasError(false);
+
     const handleLoadStart = () => {
-        console.log("Video loadstart...");
+        console.log("[Event] Video loadstart...");
         setIsLoading(true);
     }
     const handleLoadedData = () => { 
-        console.log("Video loadeddata.");
+        console.log("[Event] Video loadeddata.");
         setIsLoading(false);
-        // Intentar reproducir una vez que los datos están listos
-        videoElement.play().catch(err => console.warn("Autoplay warning after load:", err));
+        console.log("[Action] Attempting to play video...");
+        videoElement.play().catch(err => console.warn("[Warning] Autoplay after load failed:", err));
     } 
     const handleError = (e: Event) => {
-      console.error('Video Error:', videoSrc, e);
+      console.error('[Error] Video loading error:', videoSrc, e);
       setHasError(true);
       setIsLoading(false);
     };
 
-    // Adjuntar listeners
     videoElement.addEventListener('loadstart', handleLoadStart);
     videoElement.addEventListener('loadeddata', handleLoadedData);
     videoElement.addEventListener('error', handleError);
 
-    // Comprobar si ya estaba listo (ej. caché del navegador)
+    // Necesitamos forzar la carga aquí porque el src se establece dinámicamente
+    // y el atributo 'key' podría no ser suficiente si el src cambia de null a un valor
+    console.log("[Action] Calling videoElement.load()");
+    videoElement.load();
+
+    // Comprobar si ya estaba listo (improbable con .load(), pero por seguridad)
     if (videoElement.readyState >= 3) {
+        console.log("[Info] Video readyState >= 3 on mount, running handleLoadedData.");
         handleLoadedData(); 
     }
     
-    // Función de limpieza para remover listeners
     return () => {
-      console.log("Cleaning up video event listeners for source:", videoElement.currentSrc);
+      console.log("[Effect video events cleanup] Removing listeners for source:", videoElement.currentSrc);
       videoElement.removeEventListener('loadstart', handleLoadStart);
       videoElement.removeEventListener('loadeddata', handleLoadedData);
       videoElement.removeEventListener('error', handleError);
     };
-  // Este efecto SÍ depende de videoSrc, para re-adjuntar listeners al video nuevo
-  }, [videoSrc]); 
+  }, [videoSrc]); // Re-ejecutar cuando videoSrc cambie (de null a URL, o entre URLs)
 
-  // Efecto para visibilidad (sin cambios)
+  // --- Efecto: Manejar visibilidad de la pestaña --- 
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && videoRef.current) {
-        console.log("Visibility changed to visible, attempting to play video.");
-        // Intenta reproducir al volver a la pestaña (por si se pausó)
-        videoRef.current.play().catch(err => console.warn('Play on visibility change warning:', err));
+      // Solo intentar play si el video existe y la pestaña está visible
+      if (document.visibilityState === 'visible' && videoRef.current && videoRef.current.readyState >= 3) {
+        console.log("[Event] Visibility changed to visible, attempting to play video.");
+        videoRef.current.play().catch(err => console.warn('[Warning] Play on visibility change failed:', err));
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, []);
+    return () => {
+        console.log("[Effect cleanup] Removing visibility listener.");
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }
+  }, []); 
 
+  // --- Renderizado --- 
+
+  // Si videoSrc es null, no renderizar el video aún (evita mostrar tag <video> vacío)
+  if (!videoSrc) {
+    console.log("Rendering null (videoSrc is null)");
+    // Puedes mostrar un fondo estático o el loader aquí si lo prefieres
+    return <div className="absolute inset-0 w-full h-screen overflow-hidden bg-gray-900 animate-pulse z-10" />;
+  }
+  
   if (hasError) {
-    // Fallback simplificado si hay error
-    console.error("Error state triggered, rendering fallback background.");
+    console.error("Rendering fallback (hasError is true)");
     return (
       <div className="absolute inset-0 w-full h-screen overflow-hidden bg-black" />
     );
   }
 
-  console.log(`Rendering Video - isLoading: ${isLoading}, videoSrc: ${videoSrc}`);
+  console.log(`Rendering video element - isLoading: ${isLoading}, videoSrc: ${videoSrc}`);
 
   return (
     <div className="absolute inset-0 w-full h-screen overflow-hidden">
+      {/* Indicador de carga visual */}
       {isLoading && (
         <div className="absolute inset-0 bg-gray-900 animate-pulse z-10" />
       )}
-      {/* Video: Usar key={videoSrc} y source dinámico */}
+      
+      {/* Elemento Video */} 
       <video
         ref={videoRef}
-        key={videoSrc} // <-- Clave para forzar recarga al cambiar src
+        key={videoSrc} 
         id="hero-video"
         className={`
           absolute w-full h-full z-0 
@@ -121,19 +158,14 @@ export default function BackgroundVideo() {
           ${isLoading ? 'opacity-0' : 'opacity-100'}
         `}
         style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }}
-        muted 
-        playsInline
-        loop 
-        preload="auto"
+        muted         
+        playsInline   
+        loop          
+        preload="auto" // Dejar que el navegador decida, pero llamaremos a load()
       >
-        <source
-          src={videoSrc} // <-- Usar la variable de estado dinámica
-          type="video/mp4"
-        />
+        {/* Ya no necesitamos el tag <source> si asignamos src directamente */}
+        {/* <source src={videoSrc} type="video/mp4" /> */}
       </video>
-      
-      {/* Overlay oscuro eliminado para mostrar el video sin filtros */}
-      {/* <div className="absolute inset-0 bg-black bg-opacity-60 z-20 pointer-events-none" /> */}
     </div>
   );
 }
