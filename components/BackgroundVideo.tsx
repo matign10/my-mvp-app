@@ -3,172 +3,145 @@
 import { useEffect, useState, useRef } from 'react';
 
 // Define las URLs de tus videos
-const HORIZONTAL_VIDEO_URL = "https://res.cloudinary.com/dogis73ig/video/upload/v1744745295/ihop10gv427qvocsm2e4.mp4";
-// --- Reemplaza esta URL con la de tu video vertical ---
-const VERTICAL_VIDEO_URL = "https://res.cloudinary.com/dogis73ig/video/upload/v1745032051/law-office-mobile_online-video-cutter.com_hh0mo6.mp4"; // Ejemplo: "https://res.cloudinary.com/../vertical-video.mp4"
+const HORIZONTAL_VIDEO_URL = "/Videos/DamaJusticiaPC.mp4"; // Asegurar que esta es la URL correcta para PC
+const VERTICAL_VIDEO_URL = "https://res.cloudinary.com/dogis73ig/video/upload/v1745032051/law-office-mobile_online-video-cutter.com_hh0mo6.mp4"; // Video vertical
 
 // Punto de corte para considerar 'móvil' (ej. Tailwind 'md' breakpoint es 768px)
-const MOBILE_BREAKPOINT = 768; 
-const LOOP_DURATION_SECONDS = 0.5; // Duración del segmento final a repetir
+const MOBILE_BREAKPOINT = 768;
 
 export default function BackgroundVideo() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [videoSrc, setVideoSrc] = useState(HORIZONTAL_VIDEO_URL); // Por defecto, el horizontal
+  // Estado para la URL del video actual
+  const [videoSrc, setVideoSrc] = useState(HORIZONTAL_VIDEO_URL);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const loopTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref para el timeout del loop
 
   // Efecto para determinar qué video usar basado en el ancho de la pantalla
   useEffect(() => {
     const checkScreenSize = () => {
-      const newSrc = window.innerWidth < MOBILE_BREAKPOINT ? VERTICAL_VIDEO_URL : HORIZONTAL_VIDEO_URL;
-      if (newSrc !== videoRef.current?.currentSrc) { // Solo actualiza si la fuente realmente necesita cambiar
-          setVideoSrc(newSrc);
-          // Es importante llamar a load() para que el navegador cargue la nueva fuente
-          videoRef.current?.load(); 
-          console.log("Cambiando fuente de video a:", newSrc);
+      const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+      const targetSrc = isMobile ? VERTICAL_VIDEO_URL : HORIZONTAL_VIDEO_URL;
+      // Solo actualizar si la fuente necesita cambiar (evita bucles)
+      // Comparamos con videoRef.current.currentSrc para ser más precisos
+      if (targetSrc !== videoRef.current?.currentSrc) { 
+          console.log(`Screen check: Setting video source to ${isMobile ? 'VERTICAL' : 'HORIZONTAL'} (${targetSrc})`);
+          setVideoSrc(targetSrc); // Actualizar el estado dispara re-render y el efecto de listeners
+          setIsLoading(true); // Mostrar carga al cambiar fuente
+          // No necesitamos llamar a load() explícitamente aquí,
+          // cambiar la key del video lo fuerza a recargar.
       }
     };
-    checkScreenSize();
+    
+    checkScreenSize(); // Ejecutar al montar
     window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []); // Ejecutar solo al montar
+    
+    return () => window.removeEventListener('resize', checkScreenSize); // Limpiar listener
+    
+  // Solo necesita ejecutarse al montar, la lógica interna maneja cambios
+  }, []); 
 
-  // Efecto para manejar la carga, errores y metadatos del video
+  // Efecto para manejar la carga y errores del video (simplificado)
   useEffect(() => {
     const videoElement = videoRef.current;
     if (!videoElement) return;
 
-    const handleLoadStart = () => setIsLoading(true);
-    const handleLoadedData = () => setIsLoading(false);
-    const handleError = () => {
-      console.error('Error al cargar video:', videoSrc);
+    const handleLoadStart = () => {
+        console.log("Video loadstart...");
+        setIsLoading(true);
+    }
+    const handleLoadedData = () => { 
+        console.log("Video loadeddata.");
+        setIsLoading(false);
+        // Intentar reproducir una vez que los datos están listos
+        videoElement.play().catch(err => console.warn("Autoplay warning after load:", err));
+    } 
+    const handleError = (e: Event) => {
+      console.error('Video Error:', videoSrc, e);
       setHasError(true);
       setIsLoading(false);
     };
-     // Asegurarse que el video intente reproducirse al cargar
-    const handleCanPlay = () => {
-        videoElement.play().catch(err => console.warn("Error al intentar autoplay:", err));
-    };
 
+    // Adjuntar listeners
     videoElement.addEventListener('loadstart', handleLoadStart);
     videoElement.addEventListener('loadeddata', handleLoadedData);
     videoElement.addEventListener('error', handleError);
-    videoElement.addEventListener('canplay', handleCanPlay);
 
-    // Si ya está listo al montar
-    if (videoElement.readyState >= 3) setIsLoading(false);
+    // Comprobar si ya estaba listo (ej. caché del navegador)
+    if (videoElement.readyState >= 3) {
+        handleLoadedData(); 
+    }
     
+    // Función de limpieza para remover listeners
     return () => {
+      console.log("Cleaning up video event listeners for source:", videoElement.currentSrc);
       videoElement.removeEventListener('loadstart', handleLoadStart);
       videoElement.removeEventListener('loadeddata', handleLoadedData);
       videoElement.removeEventListener('error', handleError);
-      videoElement.removeEventListener('canplay', handleCanPlay);
     };
-  }, [videoSrc]); // Depende de videoSrc
+  // Este efecto SÍ depende de videoSrc, para re-adjuntar listeners al video nuevo
+  }, [videoSrc]); 
 
-  // Efecto para el loop del segmento final
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    if (!videoElement) return;
-
-    let loopStartTime = 0;
-
-    const handleTimeUpdate = () => {
-        if (videoElement.duration && !isNaN(videoElement.duration)) {
-            // Calcula el punto de inicio del loop solo una vez que la duración esté disponible
-            if (loopStartTime === 0) {
-                loopStartTime = videoElement.duration - LOOP_DURATION_SECONDS;
-                // Asegúrate de que loopStartTime no sea negativo si el video es muy corto
-                if (loopStartTime < 0) loopStartTime = 0;
-            }
-            
-            // Cuando el tiempo actual alcanza o supera el inicio del segmento de loop
-            if (loopStartTime > 0 && videoElement.currentTime >= loopStartTime) {
-                // console.log(`Looping: currentTime=${videoElement.currentTime.toFixed(2)}, loopStart=${loopStartTime.toFixed(2)}`);
-                videoElement.currentTime = loopStartTime;
-                // Forzar play por si acaso se detuvo (algunos navegadores pueden pausar al buscar)
-                videoElement.play().catch(err => console.warn("Warn: Play en loop falló", err));
-            }
-        }
-    };
-    
-    // Usar 'seeked' para reiniciar la lógica si el usuario busca manualmente
-    const handleSeeked = () => {
-        loopStartTime = 0; // Recalcular al buscar
-    }
-
-    videoElement.addEventListener('timeupdate', handleTimeUpdate);
-    videoElement.addEventListener('seeked', handleSeeked);
-
-    return () => {
-      videoElement.removeEventListener('timeupdate', handleTimeUpdate);
-      videoElement.removeEventListener('seeked', handleSeeked);
-    };
-  }, [videoSrc]); // Depende de videoSrc porque duration cambia
-
-  // Efecto para reiniciar al cambiar visibilidad (ya existente)
+  // Efecto para visibilidad (sin cambios)
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible' && videoRef.current) {
-        videoRef.current.play().catch(err => console.error('Error al reproducir video:', err));
+        console.log("Visibility changed to visible, attempting to play video.");
+        // Intenta reproducir al volver a la pestaña (por si se pausó)
+        videoRef.current.play().catch(err => console.warn('Play on visibility change warning:', err));
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
-  if (hasError && videoSrc === VERTICAL_VIDEO_URL) {
-     // Si falla el video vertical, intenta mostrar el fallback (poster o nada)
-     // O podrías intentar cargar el horizontal aquí como último recurso
-     console.warn("Fallo al cargar video vertical, mostrando fallback.");
-     // Retorna un div simple o el poster estático
-     return (
-        <div className="absolute inset-0 w-full h-screen overflow-hidden bg-black">
-           <img src="/images/fallback-bg.jpg" alt="Background" className="w-full h-full object-cover opacity-50" />
-        </div>
-     );
-  }
-  
-  if (hasError) { // Error general o error con el video horizontal
+  if (hasError) {
+    // Fallback simplificado si hay error
     return (
-      <div className="absolute inset-0 w-full h-screen overflow-hidden bg-gray-900">
-        <div className="absolute inset-0 bg-black bg-opacity-40" />
-        {/* Podrías mostrar el poster aquí también */}
+      <div className="absolute inset-0 w-full h-screen overflow-hidden bg-black">
          <img src="/images/fallback-bg.jpg" alt="Background" className="w-full h-full object-cover opacity-50" />
       </div>
     );
   }
 
+  console.log(`Rendering Video - isLoading: ${isLoading}, videoSrc: ${videoSrc}`);
+
   return (
     <div className="absolute inset-0 w-full h-screen overflow-hidden">
       {isLoading && (
-        <div className="absolute inset-0 bg-gray-900 animate-pulse" />
+        <div className="absolute inset-0 bg-gray-900 animate-pulse z-10" />
       )}
+      {/* Poster: Siempre detrás */}
+      <img 
+        src="/images/fallback-bg.jpg" 
+        alt="Background Poster" 
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        aria-hidden="true"
+      />
+      {/* Video: Usar key={videoSrc} y source dinámico */}
       <video
         ref={videoRef}
-        key={videoSrc} 
+        key={videoSrc} // <-- Clave para forzar recarga al cambiar src
         id="hero-video"
-        className={`absolute w-full h-full object-contain object-center md:object-cover md:object-[50%_0%] transition-opacity duration-500 ${
-          isLoading ? 'opacity-0' : 'opacity-100'
-        }`}
-        style={{ 
-          position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', zIndex: '-1'
-        }}
-        autoPlay
-        muted // Muted es crucial para autoplay en muchos navegadores
-        playsInline // Importante para móviles
+        className={`
+          absolute w-full h-full z-10 
+          object-contain object-center md:object-cover md:object-[50%_0%] 
+          transition-opacity duration-500 ease-in-out 
+          ${isLoading ? 'opacity-0' : 'opacity-100'}
+        `}
+        style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }}
+        muted 
+        playsInline
+        loop 
         preload="auto"
-        poster="/images/fallback-bg.jpg"
-        // loop fue eliminado
       >
         <source
-          src={videoSrc} 
+          src={videoSrc} // <-- Usar la variable de estado dinámica
           type="video/mp4"
         />
       </video>
-      {/* Overlay oscuro para mejorar la legibilidad del texto */}
-      <div className="absolute inset-0 bg-black bg-opacity-40" />
+      
+      {/* Overlay oscuro eliminado para mostrar el video sin filtros */}
+      {/* <div className="absolute inset-0 bg-black bg-opacity-60 z-20 pointer-events-none" /> */}
     </div>
   );
 }

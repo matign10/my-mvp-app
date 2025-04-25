@@ -1,6 +1,3 @@
-'use client';
-
-import { useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import BackgroundVideo from "@/components/BackgroundVideo";
@@ -9,77 +6,12 @@ import PracticeArea from "@/components/PracticeArea";
 import ContactForm from "@/components/ContactForm";
 
 export default function Home() {
-  const [expandedArea, setExpandedArea] = useState<string | null>(null);
-
-  const practiceAreas = [
-    {
-      id: 'civil',
-      title: "Derecho Civil",
-      description: "Asesoramiento integral en derecho civil, contratos, familia y sucesiones.",
-      icon: (
-        <svg className="w-12 h-12 text-[#2d3436]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-      ),
-      expandedContent: {
-        description: "Nuestro equipo especializado en derecho civil ofrece una amplia gama de servicios para proteger sus derechos y resolver conflictos de manera efectiva.",
-        services: [
-          "Contratos y negociaciones comerciales",
-          "Derecho de familia y divorcios",
-          "Sucesiones y herencias",
-          "Responsabilidad civil",
-          "Derechos reales y propiedad"
-        ]
-      }
-    },
-    {
-      id: 'laboral',
-      title: "Derecho Laboral",
-      description: "Solución integral en materia laboral y relaciones de trabajo.",
-      icon: (
-        <svg className="w-12 h-12 text-[#2d3436]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      ),
-      expandedContent: {
-        description: "Brindamos asesoramiento completo en materia laboral, protegiendo los derechos tanto de empleadores como de trabajadores.",
-        services: [
-          "Negociaciones colectivas",
-          "Despidos y liquidaciones",
-          "Accidentes laborales",
-          "Discriminación laboral",
-          "Convenios colectivos"
-        ]
-      }
-    },
-    {
-      id: 'penal',
-      title: "Derecho Penal",
-      description: "Defensa penal especializada y asesoramiento en procedimientos penales.",
-      icon: (
-        <svg className="w-12 h-12 text-[#2d3436]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      ),
-      expandedContent: {
-        description: "Ofrecemos una defensa penal robusta y profesional, garantizando el debido proceso y la protección de sus derechos fundamentales.",
-        services: [
-          "Defensa en juicios penales",
-          "Recursos y apelaciones",
-          "Delitos económicos",
-          "Delitos contra la propiedad",
-          "Asesoramiento preventivo"
-        ]
-      }
-    }
-  ];
-
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative h-screen bg-transparent z-0">
+      <section className="relative sticky top-0 h-screen bg-transparent z-0">
         <BackgroundVideo />
-        <div className="relative h-full flex flex-col justify-center z-10 pt-20 pb-10 max-w-screen-xl mx-auto px-4">
+        <div className="relative h-full flex flex-col justify-center z-10 pt-16 pb-10 max-w-screen-xl mx-auto px-4">
           <div className="max-w-2xl text-white">
             <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight drop-shadow-2xl">
               Excelencia Legal al Servicio de Nuestros Clientes
@@ -104,17 +36,63 @@ export default function Home() {
             Áreas de Práctica
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {practiceAreas.map((area) => (
-              <PracticeArea
-                key={area.id}
-                title={area.title}
-                description={area.description}
-                icon={area.icon}
-                expandedContent={area.expandedContent}
-                isExpanded={expandedArea === area.id}
-                onToggle={() => setExpandedArea(expandedArea === area.id ? null : area.id)}
-              />
-            ))}
+            <PracticeArea
+              title="Derecho Civil"
+              description="Asesoramiento integral en derecho civil, contratos, familia y sucesiones."
+              icon={
+                <svg className="w-12 h-12 text-[#2d3436]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              }
+              expandedContent={{
+                description: "Nuestro equipo especializado en derecho civil ofrece una amplia gama de servicios para proteger sus derechos y resolver conflictos de manera efectiva.",
+                services: [
+                  "Contratos y negociaciones comerciales",
+                  "Derecho de familia y divorcios",
+                  "Sucesiones y herencias",
+                  "Responsabilidad civil",
+                  "Derechos reales y propiedad"
+                ]
+              }}
+            />
+            <PracticeArea
+              title="Derecho Laboral"
+              description="Solución integral en materia laboral y relaciones de trabajo."
+              icon={
+                <svg className="w-12 h-12 text-[#2d3436]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              }
+              expandedContent={{
+                description: "Brindamos asesoramiento completo en materia laboral, protegiendo los derechos tanto de empleadores como de trabajadores.",
+                services: [
+                  "Negociaciones colectivas",
+                  "Despidos y liquidaciones",
+                  "Accidentes laborales",
+                  "Discriminación laboral",
+                  "Convenios colectivos"
+                ]
+              }}
+            />
+            <PracticeArea
+              title="Derecho Penal"
+              description="Defensa penal especializada y asesoramiento en procedimientos penales."
+              icon={
+                <svg className="w-12 h-12 text-[#2d3436]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              }
+              expandedContent={{
+                description: "Ofrecemos una defensa penal robusta y profesional, garantizando el debido proceso y la protección de sus derechos fundamentales.",
+                services: [
+                  "Defensa en juicios penales",
+                  "Recursos y apelaciones",
+                  "Delitos económicos",
+                  "Delitos contra la propiedad",
+                  "Asesoramiento preventivo"
+                ]
+              }}
+            />
           </div>
         </div>
       </section>
@@ -128,10 +106,10 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
-                name: "Dr. Matías González Novillo",
-                role: "Socio",
-                description: "Abogado con amplia experiencia en Derecho Penal y Civil. Ha trabajado 6 años en el Poder Judicial de la Ciudad Autonoma de Buenos Aires.",
-                linkedin: "https://www.linkedin.com/in/matias-gonzalez-novillo/"
+                name: "Dr. Juan Pérez",
+                role: "Socio Fundador",
+                description: "Especialista en derecho civil y comercial con más de 15 años de experiencia. Lidera el área de derecho corporativo y ha asesorado a importantes empresas nacionales e internacionales.",
+                linkedin: "https://linkedin.com/in/juan-perez"
               },
               {
                 name: "Dra. María González",
