@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import BackgroundVideo from "@/components/BackgroundVideo";
+// import BackgroundVideo from "@/components/BackgroundVideo"; // Comentado temporalmente
+import SimpleClientLogger from "@/components/SimpleClientLogger"; // Importar el logger
 import GoogleMap from "@/components/GoogleMap";
 import PracticeArea from "@/components/PracticeArea";
 import ContactForm from "@/components/ContactForm";
@@ -78,7 +79,8 @@ export default function Home() {
     <main>
       {/* Hero Section */}
       <section className="relative sticky top-0 h-screen bg-transparent z-0">
-        <BackgroundVideo />
+        {/* <BackgroundVideo /> */}
+        <SimpleClientLogger message="Logger in Hero Section" /> {/* Usar el logger aquí */}
         <div className="relative h-full flex flex-col justify-center z-10 pt-16 pb-10 max-w-screen-xl mx-auto px-4">
           <div className="max-w-2xl text-white">
             <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight drop-shadow-2xl">
