@@ -3,8 +3,8 @@
 import { useEffect, useState, useRef } from 'react';
 
 // Define las URLs de tus videos
-const HORIZONTAL_VIDEO_URL = "/Videos/DamaJusticiaPC.mp4"; // Asegurar que esta es la URL correcta para PC
-const VERTICAL_VIDEO_URL = "/Videos/DamaJusticiaPCMovil.mp4"; // Nueva URL local para móvil
+const HORIZONTAL_VIDEO_URL = "/videos/DamaJusticiaPC.mp4"; // Asegurar que esta es la URL correcta para PC
+const VERTICAL_VIDEO_URL = "/videos/DamaJusticiaPCMovil.mp4"; // Nueva URL local para móvil
 
 // Punto de corte para considerar 'móvil' (ej. Tailwind 'md' breakpoint es 768px)
 const MOBILE_BREAKPOINT = 768;
@@ -151,6 +151,7 @@ export default function BackgroundVideo() {
         ref={videoRef}
         key={videoSrc} 
         id="hero-video"
+        src={videoSrc}
         className={`
           absolute w-full h-full z-0 
           object-contain object-center md:object-cover md:object-[50%_0%] 
