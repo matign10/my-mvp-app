@@ -26,8 +26,7 @@
     "nodemailer": "^6.10.0",
     "react": "^18",
     "react-dom": "^18",
-    "react-email": "^4.0.7",
-    "react-quill": "^2.0.0"
+    "react-email": "^4.0.7"
   },
   "devDependencies": {
     "@types/google.maps": "^3.58.1",

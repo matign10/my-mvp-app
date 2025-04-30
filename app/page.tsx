@@ -107,7 +107,7 @@ export default function Home() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {practiceAreas.map((area) => (
-              <PracticeArea
+            <PracticeArea
                 key={area.id}
                 title={area.title}
                 description={area.description}
@@ -115,7 +115,7 @@ export default function Home() {
                 expandedContent={area.expandedContent}
                 isExpanded={expandedArea === area.id}
                 onToggle={() => setExpandedArea(expandedArea === area.id ? null : area.id)}
-              />
+            />
             ))}
           </div>
         </div>
