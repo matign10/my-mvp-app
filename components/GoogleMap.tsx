@@ -1,46 +1,42 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-
-declare global {
-  interface Window {
-    google: typeof google;
-  }
-}
+import { Loader } from '@googlemaps/js-api-loader';
 
 export default function GoogleMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
-  const markerRef = useRef<google.maps.Marker | null>(null);
+  const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
 
   useEffect(() => {
-    const loadGoogleMaps = () => {
-      if (typeof window.google === 'undefined') {
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
-        script.async = true;
-        script.defer = true;
-        script.onload = initializeMap;
-        document.head.appendChild(script);
-      } else {
-        initializeMap();
-      }
-    };
+    const loader = new Loader({
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+      version: "weekly",
+      libraries: ["marker", "places"]
+    });
 
-    const initializeMap = () => {
+    let map: google.maps.Map;
+    let marker: google.maps.marker.AdvancedMarkerElement;
+    let infoWindow: google.maps.InfoWindow;
+
+    const initializeMap = async () => {
       if (!mapRef.current) return;
 
-      // Coordenadas exactas de Uruguay 763, CABA
+      const { Map } = await loader.importLibrary('maps') as typeof google.maps;
+      const { AdvancedMarkerElement } = await loader.importLibrary('marker') as typeof google.maps.marker;
+      const { InfoWindow } = await loader.importLibrary('maps') as typeof google.maps;
+
       const exactPosition = {
-        lat: -34.595722,
-        lng: -58.384592
+        lat: -34.599829,
+        lng: -58.389149
       };
 
       const mapOptions = {
         zoom: 18,
         center: exactPosition,
-        mapTypeId: window.google.maps.MapTypeId.ROADMAP,
+        mapId: '2817715e78c388d7',
+        mapTypeId: 'roadmap',
         styles: [
           {
             featureType: "all",
@@ -125,48 +121,43 @@ export default function GoogleMap() {
         ]
       };
 
-      mapInstanceRef.current = new window.google.maps.Map(mapRef.current, mapOptions);
+      map = new Map(mapRef.current, mapOptions);
+      mapInstanceRef.current = map;
 
-      // Crear el marcador personalizado
-      markerRef.current = new window.google.maps.Marker({
+      marker = new AdvancedMarkerElement({
         position: exactPosition,
-        map: mapInstanceRef.current,
+        map: map,
         title: "ECEN Estudio Jurídico",
-        animation: window.google.maps.Animation.DROP,
-        icon: {
-          url: '/images/marker.svg',
-          scaledSize: new window.google.maps.Size(40, 40),
-          anchor: new window.google.maps.Point(20, 40)
-        }
       });
+      markerRef.current = marker;
 
-      // Crear la ventana de información
-      infoWindowRef.current = new window.google.maps.InfoWindow({
+      const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${exactPosition.lat},${exactPosition.lng}`;
+
+      infoWindow = new InfoWindow({
         content: `
           <div class="p-2">
             <h3 class="font-bold">ECEN Estudio Jurídico</h3>
-            <p>Uruguay 763, C1015 Cdad. Autónoma de Buenos Aires, Argentina</p>
+            <p>Uruguay 763, C1015 Cdad. Autónoma de Buenos Aires</p>
+            <a href="${directionsUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 hover:underline mt-1 inline-block">
+              Obtener direcciones
+            </a>
           </div>
         `
       });
+      infoWindowRef.current = infoWindow;
 
-      // Agregar el evento de clic al marcador
-      markerRef.current.addListener("click", () => {
-        if (infoWindowRef.current && markerRef.current) {
-          infoWindowRef.current.open(mapInstanceRef.current, markerRef.current);
-        }
+      marker.addListener("click", () => {
+        infoWindow.open(map, marker);
       });
     };
 
-    loadGoogleMaps();
+    initializeMap();
 
     return () => {
-      if (markerRef.current) {
-        markerRef.current.setMap(null);
-      }
-      if (infoWindowRef.current) {
-        infoWindowRef.current.close();
-      }
+      markerRef.current = null;
+      infoWindowRef.current?.close();
+      infoWindowRef.current = null;
+      mapInstanceRef.current = null;
     };
   }, []);
 
@@ -175,15 +166,6 @@ export default function GoogleMap() {
       <div 
         ref={mapRef} 
         className="w-full h-full"
-      />
-      {/* Iframe de respaldo */}
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.016887889456!2d-58.3863807!3d-34.595722!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcca9b4ef9aae3%3A0x7b0ef4c58b663aa9!2sUruguay%20763%2C%20C1015%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1709912345678!5m2!1ses-419!2sar"
-        className="absolute inset-0 w-full h-full"
-        style={{ border: 0 }}
-        allowFullScreen
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
       />
     </div>
   );
