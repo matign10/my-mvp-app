@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 import { sendContactEmail } from '@/lib/emailService';
 
+// Función simple para eliminar tags HTML
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '');
+}
+
 export async function POST(request: Request) {
   try {
     console.log('Iniciando procesamiento de contacto...');
@@ -29,16 +34,22 @@ export async function POST(request: Request) {
       );
     }
 
+    // Sanear los campos de texto para eliminar HTML
+    const sanitizedName = stripHtml(name);
+    const sanitizedEmail = stripHtml(email); // Aunque validamos formato, saneamos por si acaso
+    const sanitizedSubject = stripHtml(subject);
+    const sanitizedMessage = stripHtml(message);
+
     console.log('Intentando guardar en Supabase...');
-    // Guardar mensaje en la base de datos
+    // Guardar mensaje en la base de datos (usando datos saneados)
     const { error: dbError } = await supabase
       .from('messages')
       .insert([
         {
-          name,
-          email,
-          subject,
-          message,
+          name: sanitizedName,
+          email: sanitizedEmail, // Guardar email saneado
+          subject: sanitizedSubject,
+          message: sanitizedMessage,
           read: false,
           created_at: new Date().toISOString()
         }
@@ -57,12 +68,12 @@ export async function POST(request: Request) {
     }
 
     console.log('Mensaje guardado en Supabase, intentando enviar email...');
-    // Enviar email de notificación
+    // Enviar email de notificación (usando datos saneados)
     const { success: emailSuccess, error: emailError } = await sendContactEmail({
-      name,
-      email,
-      subject,
-      message
+      name: sanitizedName,
+      email: sanitizedEmail, // Usar email saneado
+      subject: sanitizedSubject,
+      message: sanitizedMessage
     });
 
     if (!emailSuccess) {
