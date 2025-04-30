@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ECEN - Estudio Jurídico",
+  title: "Echavarría Coll & González Novillo (ECEN) - Estudio Jurídico",
   description: "Estudio jurídico especializado en derecho civil, penal y laboral.",
 };
 

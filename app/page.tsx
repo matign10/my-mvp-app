@@ -265,6 +265,15 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Footer Simple */}
+      <footer className="bg-gray-100 dark:bg-gray-900 mt-16 py-6">
+        <div className="max-w-screen-xl mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-400">
+          <p>&copy; {new Date().getFullYear()} Echavarría Coll & González Novillo. Todos los derechos reservados.</p>
+          <p>Sitio web operado bajo el dominio estudio-ecen.com.</p>
+        </div>
+      </footer>
+
     </main>
   );
 }

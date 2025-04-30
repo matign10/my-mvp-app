@@ -78,8 +78,10 @@ export default function Navbar() {
             onClick={(e) => handleClick(e, '/')}
             className="flex items-center"
           >
-            <span className={`text-2xl font-bold tracking-tight drop-shadow-sm ${activeSection === '/' ? 'text-[#2d3436]' : 'text-[#636e72]'}`}>
-              ECEN
+            <span 
+              className={`text-2xl font-bold tracking-tight drop-shadow-sm ${activeSection === '/' ? 'text-[#2d3436]' : 'text-[#636e72]'}`}
+            >
+              Echavarría Coll & González Novillo
             </span>
           </Link>
 
