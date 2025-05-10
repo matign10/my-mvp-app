@@ -1,33 +1,33 @@
 import Image from "next/image";
 import Link from "next/link";
-import BackgroundImage from "@/components/BackgroundVideo";
+import BackgroundVideo from "@/components/BackgroundVideo";
 import GoogleMap from "@/components/GoogleMap";
 import PracticeArea from "@/components/PracticeArea";
 import ContactForm from "@/components/ContactForm";
+import VideoBackground from '../components/VideoBackground';
 
 export default function Home() {
   return (
-    <main>
-      {/* Hero Section */}
-      <section className="relative min-h-screen overflow-hidden bg-[#2d3436]">
-        <BackgroundImage />
-        <div className="relative z-10 max-w-screen-xl mx-auto px-4 h-full flex items-center">
-          <div className="max-w-2xl text-white pt-[150px] md:pt-[180px]">
-            <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
-              Excelencia Legal al Servicio de Nuestros Clientes
-            </h1>
-            <p className="text-lg mb-8">
-              Brindamos asesoramiento legal integral con los más altos estándares de calidad y profesionalismo.
-            </p>
-            <Link
-              href="#contacto"
-              className="inline-block bg-[#636e72] text-white px-6 py-3 text-sm md:px-8 md:text-base font-medium hover:bg-[#4a525a] transition-colors rounded-md"
-            >
-              Contáctenos
-            </Link>
-          </div>
-        </div>
-      </section>
+    <main className="relative min-h-screen">
+      <VideoBackground 
+        videoUrl="/videos/law-office.mp4"
+        mobileVideoSrc="/videos/law-office-mobile.mp4"
+        fallbackImageUrl="/images/law-office-fallback.jpg"
+        overlayOpacity={0.5}
+        className="z-0"
+      />
+      
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-white px-4 py-16 md:py-0">
+        <h1 className="text-4xl md:text-6xl font-bold text-center mb-6">
+          Tu Firma Legal de Confianza
+        </h1>
+        <p className="text-xl md:text-2xl text-center mb-8 max-w-2xl">
+          Expertos en derecho corporativo, laboral y más. Defendemos tus derechos con profesionalismo y compromiso.
+        </p>
+        <button className="bg-white text-gray-900 px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-100 transition-colors">
+          Agenda una Consulta
+        </button>
+      </div>
 
       {/* Áreas de Práctica */}
       <section className="py-16 md:py-20 bg-white" id="areas">
