@@ -106,28 +106,28 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
-                name: "Dr. Juan Pérez",
-                role: "Socio Fundador",
-                description: "Especialista en derecho civil y comercial con más de 15 años de experiencia. Lidera el área de derecho corporativo y ha asesorado a importantes empresas nacionales e internacionales.",
-                linkedin: "https://linkedin.com/in/juan-perez"
+                name: "Matías González Novillo",
+                role: "Abogado",
+                description: "Especialista en derecho civil y comercial. Brinda asesoramiento integral a empresas y particulares, con amplia experiencia en contratos y resolución de conflictos.",
+                linkedin: "https://linkedin.com/in/matias-gonzalez-novillo"
               },
               {
-                name: "Dra. María González",
-                role: "Socia Senior",
-                description: "Experta en derecho laboral y relaciones de trabajo. Ha desarrollado una destacada trayectoria en negociaciones colectivas y resolución de conflictos laborales.",
-                linkedin: "https://linkedin.com/in/maria-gonzalez"
+                name: "Profesional 2",
+                role: "Abogado",
+                description: "Descripción del segundo profesional.",
+                linkedin: "#"
               },
               {
-                name: "Dr. Carlos Rodríguez",
-                role: "Socio Senior",
-                description: "Especialista en derecho penal y procesal penal. Ha defendido exitosamente casos de alta complejidad y es reconocido por su expertise en derecho constitucional.",
-                linkedin: "https://linkedin.com/in/carlos-rodriguez"
+                name: "Profesional 3",
+                role: "Abogado",
+                description: "Descripción del tercer profesional.",
+                linkedin: "#"
               },
               {
-                name: "Dra. Ana Martínez",
-                role: "Socia Senior",
-                description: "Experta en derecho tributario y financiero. Ha asesorado a importantes grupos empresarios en operaciones de fusión y adquisición, y en estructuraciones fiscales.",
-                linkedin: "https://linkedin.com/in/ana-martinez"
+                name: "Profesional 4",
+                role: "Abogado",
+                description: "Descripción del cuarto profesional.",
+                linkedin: "#"
               }
             ].map((profesional, i) => (
               <div key={i} className="text-center">
