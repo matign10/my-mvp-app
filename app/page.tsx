@@ -24,6 +24,15 @@ const staggerContainer = {
   }
 };
 
+// Smooth scroll function
+const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+  e.preventDefault();
+  const element = document.querySelector(targetId);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+};
+
 export default function Home() {
   return (
     <main>
@@ -69,12 +78,13 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}
             >
-              <Link
+              <a
                 href="#contacto"
-                className="inline-block bg-amber-600 text-white px-8 py-4 text-base font-semibold hover:bg-amber-700 transition-all duration-300 rounded-md shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                onClick={(e) => scrollToSection(e, '#contacto')}
+                className="inline-block bg-amber-600 text-white px-8 py-4 text-base font-semibold hover:bg-amber-700 transition-all duration-300 rounded-md shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
               >
                 Contáctenos
-              </Link>
+              </a>
             </motion.div>
           </motion.div>
         </div>
@@ -86,10 +96,14 @@ export default function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
         >
-          <Link href="#areas" className="flex flex-col items-center text-white/70 hover:text-amber-500 transition-colors">
+          <a
+            href="#areas"
+            onClick={(e) => scrollToSection(e, '#areas')}
+            className="flex flex-col items-center text-white/70 hover:text-amber-500 transition-colors cursor-pointer"
+          >
             <span className="text-sm mb-2">Explorar</span>
             <ChevronDown className="w-6 h-6 animate-bounce-slow" />
-          </Link>
+          </a>
         </motion.div>
       </section>
 
